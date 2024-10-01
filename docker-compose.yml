@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  mysql:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: "exit 0" # Replace with proper MySQL health check logic
+      interval: 10s
+      retries: 5
+    networks:
+      - back_network
+
+  backend:
+    build:
+      context: ./devkin
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/devkin_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: userpassword
+    networks:
+      - front_network
+      - back_network
+
+  frontend:
+    build:
+      context: ./devkin-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    networks:
+      - front_network
+
+volumes:
+  mysql_data:
+
+networks:
+  front_network:
+    driver: bridge
+
+  back_network:
+    driver: bridge
