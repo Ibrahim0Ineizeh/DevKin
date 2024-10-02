@@ -1,0 +1,37 @@
+/* Navbar.css */
+
+nav {
+    background-color: #333;
+    padding: 10px 0;
+  }
+  
+  nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin: 0 15px;
+  }
+  
+  nav ul li a, nav ul li button {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 12px;
+    border: none;
+    background: none;
+  }
+  
+  nav ul li button {
+    cursor: pointer;
+  }
+  
+  nav ul li a:hover, nav ul li button:hover {
+    background-color: #575757;
+    border-radius: 4px;
+  }
+  

@@ -1,0 +1,26 @@
+/* HomeAbout.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  h1, h2 {
+    color: #0044cc;
+    text-align: center;
+  }
+  
+  .container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .container p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #555;
+  }
+  
+  
