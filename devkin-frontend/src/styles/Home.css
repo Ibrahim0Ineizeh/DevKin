@@ -1,26 +1,157 @@
 /* HomeAbout.css */
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-  }
-  
-  h1, h2 {
-    color: #0044cc;
-    text-align: center;
-  }
-  
-  .container {
-    padding: 20px;
-    text-align: center;
-  }
-  
+  margin: 0;
+  font-family: "Kanit", sans-serif;
+  background-color: #f4f4f4; /* Light mode background */
+  color: #333; /* Light mode text */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+  padding: 20px;
+  text-align: center;
+}
+
+.para {
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* Light Mode Styles */
+.light-mode {
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+.light-mode h1, .light-mode h2 {
+  color: #4793AF;
+}
+
+.light-mode .feature-item {
+  background-color: #ffc370cc;
+}
+
+/* Dark Mode Styles */
+.dark-mode {
+  background-color: hsl(0, 0%, 12%);
+  color: #f4f4f4;
+}
+
+.dark-mode h1, .dark-mode h2 {
+  color: #81c7ff;
+}
+
+.dark-mode .feature-item {
+  background-color: #333;
+}
+
+/* Switch Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  margin-top: 10px; /* Add some margin on top */
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: background-color 0.2s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+input:checked + .slider {
+  background-color: #81c7ff; /* Color for the switch background when checked */
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px); /* Move the switch ball to the right when checked */
+}
+
+.features {
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.feature-item {
+  width: calc(50% - 40px); /* Responsive width with margin */
+  margin: 20px;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s;
+}
+
+.feature-item h3 {
+  color: inherit; /* Inherit color for light/dark mode */
+}
+
+/* Call to Action Section */
+.cta {
+  margin: 40px 0;
+}
+
+.cta-button {
+  background-color: #4793AF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+  background-color: #3b7695;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
   .container p {
-    font-size: 1.2em;
-    line-height: 1.6;
-    color: #555;
+    font-size: 1em; /* Smaller font size on smaller screens */
   }
-  
-  
+
+  .feature-item {
+    width: calc(100% - 40px); /* Full width on smaller screens */
+    max-width: 100%; /* No max width on small screens */
+  }
+
+  .cta-button {
+    font-size: 1em; /* Adjust button size for smaller screens */
+    padding: 8px 16px; /* Adjust padding */
+  }
+}
+
+@media (max-width: 480px) {
+  h1, h2 {
+    font-size: 1.5em; /* Smaller heading sizes on very small screens */
+  }
+}
