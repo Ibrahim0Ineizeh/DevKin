@@ -1,10 +1,11 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home'; 
-import About from './pages/About';
+import About from './Pages/About';
+import Signin from "./Pages/Signin";
+import Signup from "./Pages/Signup";
 import { ThemeProvider } from './Components/Theme'; // Make sure to import ThemeProvider
 import Navbar from './Navbar';
-import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -13,8 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        {/* <Route path="/signin" element={<About />} />
-        <Route path="/signup" element={<About />} /> */}
+        <Route path="/signin" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
         {/* <Route
           path="/dashboard"
           element={isAuthenticated ? <Dashboard /> : <Navigate to="/signin" />}

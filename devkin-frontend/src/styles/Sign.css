@@ -1,0 +1,106 @@
+/* common-theme.css */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .dark-mode-body {
+    background-color: #121212;
+    color: #fff;
+  }
+  
+  .light-mode-body {
+    background-color: #ffffff;
+    color: #000;
+  }
+  
+  .form-container {
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 450px;
+    margin: 50px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .dark-mode {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .light-mode {
+    background-color: #f0f0f0;
+    color: #000;
+  }
+  
+  .form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-container label {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .form-container input[type="text"],
+  .form-container input[type="email"],
+  .form-container input[type="password"] {
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .form-container button {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .form-container button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    margin-bottom: 15px;
+  }
+  
+  .form-container .social-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .social-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    width: 48%;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .social-button.github {
+    background-color: #333;
+    color: #fff;
+    margin-right: 10px;
+  }
+  
+  .social-button.google {
+    background-color: #db4437;
+    color: #fff;
+  }
+  
