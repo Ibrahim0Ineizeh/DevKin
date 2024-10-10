@@ -4,12 +4,12 @@ import Home from './Pages/Home';
 import About from './Pages/About';
 import Signin from "./Pages/Signin";
 import Signup from "./Pages/Signup";
-import { ThemeProvider } from './Components/Theme'; // Make sure to import ThemeProvider
+import { ThemeProvider } from './Components/Theme'; 
 import Navbar from './Navbar';
 
 function App() {
   return (
-    <ThemeProvider> {/* Wrap the app with ThemeProvider */}
+    <ThemeProvider> 
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
