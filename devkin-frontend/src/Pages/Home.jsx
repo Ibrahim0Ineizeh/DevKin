@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '../Components/Theme'; // Import useTheme
+import { useTheme } from '../Components/Theme'; 
 import '../styles/Home.css';
 
 const Home = () => {

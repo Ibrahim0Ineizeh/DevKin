@@ -1,46 +1,69 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../Components/Theme';
-import { useEffect } from 'react';
 import '../styles/Sign.css';
+import '../styles/popup.css'; // Ensure you are using the correct CSS file
 
 const SignInPage = () => {
   const { isDarkMode } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Make a request to your authentication API
-    const response = await fetch('http://localhost:8080/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
     
-    const data = await response.json();
-    if (data.token) {
-      // Save the token in localStorage
-      localStorage.setItem('authToken', data.token);
-      // Navigate to the dashboard
-      navigate('/dashboard');
-    } else {
-      alert('Invalid credentials');
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+      if (response.ok && data.token) {
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('email', email);
+        navigate('/dashboard');
+      } else {
+        alert(data.message || 'Invalid credentials');
+      }
+    } catch (error) {
+      alert('An error occurred while signing in. Please try again later.');
     }
+  };
+
+  const checkExistingUser = (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    const existingToken = localStorage.getItem('authToken');
+    const existingEmail = localStorage.getItem('email');
+
+    if (existingToken && existingEmail) {
+      setShowPopup(true);
+      setTimeout(() => {
+        document.querySelector('.popup').classList.add('show');
+      }, 100); 
+    } else {
+      handleSubmit(e); // Proceed with login
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setShowPopup(false);
   };
 
   useEffect(() => {
     document.body.className = isDarkMode ? 'dark-mode-body' : 'light-mode-body';
   }, [isDarkMode]);
 
-
   return (
     <div className={`form-container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
       <h2>Sign In</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={checkExistingUser}>
         <div>
           <label htmlFor="email">Email</label>
           <input
@@ -63,14 +86,45 @@ const SignInPage = () => {
         </div>
         <button type="submit">Sign In</button>
         <div className="social-buttons">
-          <div className="social-button github">
-            Sign up with GitHub
-          </div>
-          <div className="social-button google">
-            Sign up with Google
-          </div>
+          <div className="social-button github">Sign up with GitHub</div>
+          <div className="social-button google">Sign up with Google</div>
         </div>
       </form>
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className={`popup ${isDarkMode ? 'dark-mode' : 'light-mode'} show`}>
+            <h3>A User is already signed in</h3>
+            <p>1- Use the already signed-in user to go to the dashboard</p>
+            <p>2- Log out the old user and log in with the new user</p>
+            <button
+              onClick={() => {
+                document.querySelector('.popup').classList.remove('show');
+                setTimeout(() => {
+                  setShowPopup(false);
+                navigate('/dashboard'); 
+                }, 300);
+              }}
+            >
+              Option 1
+            </button>
+
+            <button
+              onClick={(e) => {
+                document.querySelector('.popup').classList.remove('show');
+                setTimeout(() => {
+                  setShowPopup(false); 
+                  handleLogout(); 
+                  handleSubmit(e);
+                }, 300);
+                
+              }}
+            >
+              Option 2
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

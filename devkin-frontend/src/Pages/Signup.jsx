@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../Components/Theme';
-import { useEffect } from 'react';
 import '../styles/Sign.css';
+import '../styles/popup.css'; 
 
 const SignUpPage = () => {
   const { isDarkMode } = useTheme();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPopup, setShowPopup] = useState(false); // State for popup visibility
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,11 +22,17 @@ const SignUpPage = () => {
         },
         body: JSON.stringify({ username, email, password }),
       });
-  
+
       const data = await response.json();
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-        navigate('/dashboard');
+      if (data.username) {
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        
+        setShowPopup(true);
+        setTimeout(() => {
+          document.querySelector('.popup').classList.add('show');
+        }, 100); // Slight delay for animation
       } else {
         alert('Sign-up failed, please try again.');
       }
@@ -74,15 +81,28 @@ const SignUpPage = () => {
           />
         </div>
         <button type="submit">Sign Up</button>
-        <div className="social-buttons">
-          <div className="social-button github">
-            Sign up with GitHub
-          </div>
-          <div className="social-button google">
-            Sign up with Google
+      </form>
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className={`popup ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
+            <h3>Sign Up Successful</h3>
+            <p>Your account has been created successfully!</p>
+            <button
+              onClick={() => {
+                // Remove the animation and close popup
+                document.querySelector('.popup').classList.remove('show');
+                setTimeout(() => {
+                  setShowPopup(false);
+                  navigate('/signin'); // Redirect to login page
+                }, 300); // Delay to allow animation to finish
+              }}
+            >
+              Close
+            </button>
           </div>
         </div>
-      </form>
+      )}
     </div>
   );
 };

@@ -8,19 +8,58 @@ import { ThemeProvider } from './Components/Theme';
 import Navbar from './Navbar';
 import ProtectedRoute from './Components/ProtectedRoute';
 import Dashboard from "./Pages/Dashboard"
+import DashboardNavbar from './DashboardNavbar';
 
 function App() {
   return (
     <ThemeProvider> 
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/signin" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
+      <Route
+          path="/"
+          element={
+            <>
+              <Navbar /> {/* Default Navbar */}
+              <Home />
+            </>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <>
+              <Navbar />
+              <About />
+            </>
+          }
+        />
+        <Route
+          path="/signin"
+          element={
+            <>
+              <Navbar />
+              <Signin />
+            </>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <>
+              <Navbar />
+              <Signup />
+            </>
+          }
+        />
         <Route
           path="/dashboard"
-          element={<ProtectedRoute element={Dashboard} />}
+          element={
+            <ProtectedRoute>
+              <>
+                <DashboardNavbar />
+                <Dashboard />
+              </>
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </ThemeProvider>
