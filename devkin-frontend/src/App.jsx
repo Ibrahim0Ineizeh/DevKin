@@ -6,6 +6,8 @@ import Signin from "./Pages/Signin";
 import Signup from "./Pages/Signup";
 import { ThemeProvider } from './Components/Theme'; 
 import Navbar from './Navbar';
+import ProtectedRoute from './Components/ProtectedRoute';
+import Dashboard from "./Pages/Dashboard"
 
 function App() {
   return (
@@ -16,10 +18,10 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/signup" element={<Signup />} />
-        {/* <Route
+        <Route
           path="/dashboard"
-          element={isAuthenticated ? <Dashboard /> : <Navigate to="/signin" />}
-        /> */}
+          element={<ProtectedRoute element={Dashboard} />}
+        />
       </Routes>
     </ThemeProvider>
   );
