@@ -15,7 +15,6 @@ const SignUpPage = () => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:8080/auth/signup', {
-        mode:  'no-cors',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

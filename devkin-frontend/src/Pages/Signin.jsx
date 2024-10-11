@@ -14,7 +14,6 @@ const SignInPage = () => {
     e.preventDefault();
     // Make a request to your authentication API
     const response = await fetch('http://localhost:8080/auth/login', {
-      mode:  'no-cors',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
