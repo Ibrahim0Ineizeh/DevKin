@@ -5,7 +5,9 @@ import com.example.devkin.entities.User;
 import com.example.devkin.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +30,7 @@ public class AuthenticationService {
 
     public User signup(RegisterUserDto input) {
         User user = new User();
-        user.setUsername(input.getUsername());
+        user.setName(input.getName());
         user.setEmail(input.getEmail());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
 
@@ -44,6 +46,20 @@ public class AuthenticationService {
         );
 
         return userRepository.findByEmail(input.getEmail())
-                .orElseThrow();
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public User authenticateOAuth2User(OAuth2User oAuth2User) {
+        String githubEmail = oAuth2User.getAttribute("email");
+        String githubUsername = oAuth2User.getAttribute("login");
+
+        return userRepository.findByEmail(githubEmail)
+                .orElseGet(() -> {
+                    User newUser = new User();
+                    newUser.setEmail(githubEmail);
+                    newUser.setName(githubUsername);
+                    newUser.setPassword("");
+                    return userRepository.save(newUser);
+                });
     }
 }
