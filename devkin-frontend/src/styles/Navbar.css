@@ -62,6 +62,17 @@
   background-color: #6F6F6F; /* Dark mode hover */
 }
 
+.navbar-username {
+  margin: auto 0;
+  font-weight: 600;
+  color: #4793AF;
+}
+
+.navbar.dark .navbar-username{
+  color:#81c7ff;
+}
+
+
 .navbar-auth {
   display: flex;
   gap: 15px;

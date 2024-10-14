@@ -6,7 +6,7 @@ import '../styles/popup.css';
 
 const SignUpPage = () => {
   const { isDarkMode } = useTheme();
-  const [username, setUsername] = useState('');
+  const [name, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
@@ -20,7 +20,7 @@ const SignUpPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await response.json();
@@ -51,11 +51,11 @@ const SignUpPage = () => {
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username</label>
+          <label htmlFor="name">Username</label>
           <input
             type="text"
             id="username"
-            value={username}
+            value={name}
             onChange={(e) => setUsername(e.target.value)}
             required
           />

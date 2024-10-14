@@ -56,7 +56,22 @@ const SignInPage = () => {
     setShowPopup(false);
   };
 
+  const handleGitHubLogin = () => {
+    // Redirect to GitHub OAuth authorization URL
+    window.location.href = 'http://localhost:8080/oauth2/authorization/github';
+  };
+
+  const handleOAuthCallback = () => {
+    const token = new URLSearchParams(window.location.search).get('token');
+    
+    if (token) {
+      localStorage.setItem('authToken', token);
+      navigate('/dashboard'); // Redirect to dashboard
+    }
+  };
+
   useEffect(() => {
+    handleOAuthCallback();
     document.body.className = isDarkMode ? 'dark-mode-body' : 'light-mode-body';
   }, [isDarkMode]);
 
@@ -86,8 +101,7 @@ const SignInPage = () => {
         </div>
         <button type="submit">Sign In</button>
         <div className="social-buttons">
-          <div className="social-button github">Sign up with GitHub</div>
-          <div className="social-button google">Sign up with Google</div>
+          <div className="social-button github" onClick={handleGitHubLogin}>Sign up with GitHub</div>
         </div>
       </form>
 

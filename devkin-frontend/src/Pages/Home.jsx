@@ -1,12 +1,21 @@
 import React from 'react';
 import { useTheme } from '../Components/Theme'; 
 import '../styles/Home.css';
+import logoLight from '../assets/devkinlight.png';
+import logoDark from '../assets/devkindark.png';
 
 const Home = () => {
   const { isDarkMode } = useTheme(); // Use theme context
 
   return (
     <div className={`container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
+      <img 
+        src={isDarkMode ? logoDark : logoLight} 
+        alt="devkin logo" 
+        width="12%" 
+        margin="0"
+        height="60%"
+      />
       <h1>Welcome to DevKin</h1>
       <h2>Your Collaborative Development Platform</h2>
       <p className='para'>

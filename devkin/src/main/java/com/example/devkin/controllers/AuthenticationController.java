@@ -5,11 +5,12 @@ import com.example.devkin.dtos.RegisterUserDto;
 import com.example.devkin.responses.LoginResponse;
 import com.example.devkin.services.AuthenticationService;
 import com.example.devkin.services.JwtService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/auth")
 @RestController
@@ -40,6 +41,27 @@ public class AuthenticationController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
 
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @GetMapping("/login/oauth2/code/github")
+    public ResponseEntity<LoginResponse> handleGithubCallback(@AuthenticationPrincipal OAuth2User principal) {
+        // Retrieve user details from the OAuth2User
+        String email = principal.getAttribute("email");
+        String name = principal.getAttribute("name");
+
+        // Logic to handle the user (e.g., save to database, create session)
+        // Here you can add logic to check if the user already exists and handle accordingly
+        User registeredUser = authenticationService.authenticateOAuth2User(principal);
+
+        // Generate a JWT token
+        String jwtToken = jwtService.generateToken(registeredUser);
+
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setToken(jwtToken);
+        loginResponse.setExpiresIn(jwtService.getExpirationTime());
+
+        // Return the response with the token
         return ResponseEntity.ok(loginResponse);
     }
 }
