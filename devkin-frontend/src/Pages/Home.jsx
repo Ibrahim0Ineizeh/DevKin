@@ -3,8 +3,10 @@ import { useTheme } from '../Components/Theme';
 import '../styles/Home.css';
 import logoLight from '../assets/devkinlight.png';
 import logoDark from '../assets/devkindark.png';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+  const navigate = useNavigate();
   const { isDarkMode } = useTheme(); // Use theme context
 
   return (
@@ -12,11 +14,8 @@ const Home = () => {
       <img 
         src={isDarkMode ? logoDark : logoLight} 
         alt="devkin logo" 
-        width="12%" 
-        margin="0"
-        height="60%"
+        className="logoimage"
       />
-      <h1>Welcome to DevKin</h1>
       <h2>Your Collaborative Development Platform</h2>
       <p className='para'>
         DevKin is a collaborative web application designed for developers to work together in real time. 
@@ -61,7 +60,7 @@ const Home = () => {
         <p>
           Join us today and experience a new way of coding together!
         </p>
-        <button className="cta-button">Sign Up Now</button>
+        <button className="cta-button" onClick={() => {navigate('/signup');}}>Sign Up Now</button>
       </section>
     </div>
   );

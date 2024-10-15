@@ -1,4 +1,5 @@
 package com.example.devkin.controllers;
+import com.example.devkin.dtos.UserInfoDto;
 import com.example.devkin.entities.User;
 import com.example.devkin.repositories.UserRepository;
 import com.example.devkin.services.AuthenticationService;
@@ -31,20 +32,26 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<User> authenticatedUser() {
+    public ResponseEntity<UserInfoDto> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof UserDetails) {
             // This is a regular user authenticated with email/password
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User currentUser = userRepository.findByEmail(userDetails.getUsername())
+            User user = (User) authentication.getPrincipal();
+            User currentUser = userRepository.findByEmail(user.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            return ResponseEntity.ok(currentUser);
+            UserInfoDto userInfoDto = new UserInfoDto();
+            userInfoDto.setEmail(currentUser.getEmail());
+            userInfoDto.setName(currentUser.getName());
+            return ResponseEntity.ok(userInfoDto);
         } else if (authentication.getPrincipal() instanceof OAuth2User) {
             // This is an OAuth2 user (GitHub in this case)
             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
             User currentUser = authenticationService.authenticateOAuth2User(oAuth2User);
-            return ResponseEntity.ok(currentUser);
+            UserInfoDto userInfoDto = new UserInfoDto();
+            userInfoDto.setEmail(currentUser.getEmail());
+            userInfoDto.setName(currentUser.getName());
+            return ResponseEntity.ok(userInfoDto);
         } else {
             throw new UsernameNotFoundException("Authenticated principal is not recognized.");
         }

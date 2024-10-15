@@ -24,7 +24,7 @@ const Home = () => {
         <p>No user information available.</p>
       )}
     </div>
-  );
+  ); 
 }
 
 export default Home;
