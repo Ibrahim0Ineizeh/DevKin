@@ -1,9 +1,11 @@
 import React from 'react';
 import '../styles/About.css';
-import { useTheme } from '../Components/Theme'; // Assuming you have a theme hook for switching modes
+import { useTheme } from '../Components/Theme'; 
+import { useNavigate } from 'react-router-dom';
 
 const About = () => {
   const { isDarkMode } = useTheme();
+  const navigate = useNavigate();
 
   return (
     <div className={`about-container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
@@ -31,7 +33,7 @@ const About = () => {
         </section>
 
         <section className="cta">
-          <button className="cta-button">Get Started</button>
+          <button className="cta-button" onClick={() => {navigate('/signin');}}>Get Started</button>
         </section>
       </div>
     </div>

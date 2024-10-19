@@ -9,6 +9,7 @@ import Navbar from './Navbar';
 import ProtectedRoute from './Components/ProtectedRoute';
 import Dashboard from "./Pages/Dashboard"
 import DashboardNavbar from './DashboardNavbar';
+import CreateProject from './Pages/CreateProject';
 
 function App() {
   return (
@@ -57,6 +58,17 @@ function App() {
               <>
                 <DashboardNavbar />
                 <Dashboard />
+              </>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/createProject"
+          element={
+            <ProtectedRoute>
+              <>
+                <DashboardNavbar />
+                <CreateProject />
               </>
             </ProtectedRoute>
           }

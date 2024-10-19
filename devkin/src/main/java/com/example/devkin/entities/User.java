@@ -8,8 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-@Table(name = "users")
+@Table(name = "User")
 @Entity
 public class User implements UserDetails {
     @Id
@@ -33,6 +34,13 @@ public class User implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Project> ownedProjects;
+
+    @ManyToMany(mappedBy = "developers")
+    private Set<Project> assignedProjects;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -84,5 +92,25 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Project> getAssignedProjects() {
+        return assignedProjects;
+    }
+
+    public void setAssignedProjects(Set<Project> assignedProjects) {
+        this.assignedProjects = assignedProjects;
+    }
+
+    public Set<Project> getOwnedProjects() {
+        return ownedProjects;
+    }
+
+    public void setOwnedProjects(Set<Project> ownedProjects) {
+        this.ownedProjects = ownedProjects;
+    }
+
+    public Integer getId() {
+        return id;
     }
 }

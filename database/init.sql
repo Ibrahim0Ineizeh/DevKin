@@ -27,7 +27,7 @@ CREATE TABLE Project (
 CREATE TABLE Project_Developers (
     project_id INT NOT NULL,
     developer_id INT NOT NULL,
-    role VARCHAR(50),
+    role VARCHAR(50), 
     PRIMARY KEY (project_id, developer_id),
     CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES Project(project_id) ON DELETE CASCADE,
     CONSTRAINT fk_developer FOREIGN KEY (developer_id) REFERENCES Users(id) ON DELETE CASCADE
