@@ -24,12 +24,12 @@ public class FolderController {
     @PostMapping("/create")
     public ResponseEntity<String> createFolder(@RequestBody FolderDto folderDto) {
         try {
-            Project project = projectRepository.findByName(folderDto.getProjectName());
+            Project project = projectRepository.findBySlug(folderDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
             Integer projectId = project.getProjectId();
 
             // Set the folder path
-            String folderPath = "projects/" + ownerId + "/" + folderDto.getProjectName() + "/" + folderDto.getFolderName() + "/";
+            String folderPath = "projects/" + ownerId + "/" + project.getName() + "/" + folderDto.getFolderName() + "/";
             fileStorageService.createFolder(folderPath, folderDto.getFolderName(), projectId);
             return new ResponseEntity<>("Folder created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
@@ -41,12 +41,12 @@ public class FolderController {
     @PutMapping("/update")
     public ResponseEntity<String> updateFolder(@RequestBody FolderDto folderDto) {
         try {
-            Project project = projectRepository.findByName(folderDto.getProjectName());
+            Project project = projectRepository.findBySlug(folderDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
             Integer projectId = project.getProjectId();
 
-            String oldFolderPath = "projects/" + ownerId + "/" + folderDto.getProjectName() + "/" + folderDto.getFolderName() + "/";
-            String newFolderPath = "projects/" + ownerId + "/" + folderDto.getProjectName() + "/" + folderDto.getNewFolderName() + "/";
+            String oldFolderPath = "projects/" + ownerId + "/" + project.getName() + "/" + folderDto.getFolderName() + "/";
+            String newFolderPath = "projects/" + ownerId + "/" + project.getName() + "/" + folderDto.getNewFolderName() + "/";
 
             fileStorageService.updateFolder(oldFolderPath, newFolderPath);
 
@@ -60,10 +60,10 @@ public class FolderController {
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteFolder(@RequestBody FolderDto folderDto) {
         try {
-            Project project = projectRepository.findByName(folderDto.getProjectName());
+            Project project = projectRepository.findBySlug(folderDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
 
-            String folderPath = "projects/" + ownerId + "/" + folderDto.getProjectName() + "/" + folderDto.getFolderName() + "/";
+            String folderPath = "projects/" + ownerId + "/" + project.getName() + "/" + folderDto.getFolderName() + "/";
             fileStorageService.deleteFolder(folderPath);
 
             return new ResponseEntity<>("Folder deleted successfully", HttpStatus.NO_CONTENT);

@@ -2,25 +2,20 @@ package com.example.devkin.services;
 
 import com.example.devkin.dtos.CreateProjectDto;
 import com.example.devkin.dtos.ProjectDto;
+import com.example.devkin.dtos.SlugProjectDto;
 import com.example.devkin.entities.Project;
 import com.example.devkin.entities.User;
 import com.example.devkin.mappings.ProjectMapper;
 import com.example.devkin.repositories.ProjectRepository;
 import com.example.devkin.repositories.UserRepository;
+import com.example.devkin.utils.SlugUtil;
 import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
-import io.minio.errors.MinioException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -44,16 +39,15 @@ public class ProjectService {
     @Autowired
     private FileStorageService fileStorageService;
 
+    @Autowired
+    private SlugUtil slugUtil;
+
     @Transactional
     public ProjectDto createProject(CreateProjectDto project) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         User currentUser = userRepository.findByEmail(user.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        if (projectRepository.existsByOwnerAndName(currentUser, project.getName())) {
-            throw new IllegalArgumentException("A project with the same name already exists.");
-        }
 
         String projectUrl = String.format("projects/%d/%s/", currentUser.getId(), project.getName());
 
@@ -63,6 +57,7 @@ public class ProjectService {
         temp.setLanguage(project.getLanguage());
         temp.setOwner(currentUser);
         temp.setSize(0);
+        temp.setSlug(slugUtil.generateUniqueSlug(project.getName()));
         temp.setUrl(projectUrl);
         temp.setCreatedAt(LocalDateTime.now());
         temp.setLastModified(LocalDateTime.now());
@@ -71,8 +66,6 @@ public class ProjectService {
         try {
             fileStorageService.createFolder(projectUrl, temp.getName(), temp.getProjectId());
         } catch (Exception e) {
-            // Handle the exception, optionally roll back the transaction
-            // Consider deleting the saved project if folder creation fails
             projectRepository.delete(savedProject);
             throw new RuntimeException("Failed to create project folder", e);
         }
@@ -90,7 +83,7 @@ public class ProjectService {
         }
 
         Project project = projectOptional.get();
-        return projectMapper.toProjectDto(project);  // Return the DTO
+        return projectMapper.toProjectDto(project);
     }
 
     @Transactional(readOnly = true)
@@ -103,16 +96,15 @@ public class ProjectService {
     }
 
     @Transactional
-    public ProjectDto updateProject(Integer projectId, CreateProjectDto updatedProjectData) {
+    public ProjectDto updateProject(Integer projectId, SlugProjectDto updatedProjectData) {
         Optional<Project> projectOptional = projectRepository.findById(projectId);
 
         if (projectOptional.isPresent()) {
             Project existingProject = projectOptional.get();
 
             String oldFolderPath = existingProject.getUrl();
-            String newFolderPath = String.format("projects/%d/%s/", existingProject.getOwner().getId(), updatedProjectData.getName());
+            String newFolderPath = String.format("projects/%d/%s/", existingProject.getOwner().getId(), existingProject.getName());
 
-            existingProject.setName(updatedProjectData.getName());
             existingProject.setDescription(updatedProjectData.getDescription());
             existingProject.setLanguage(updatedProjectData.getLanguage());
             existingProject.setLastModified(LocalDateTime.now());
@@ -128,7 +120,7 @@ public class ProjectService {
 
             return  projectMapper.toProjectDto(existingProject);
         }
-        return null;  // Return null if the project doesn't exist
+        return null;
     }
 
     @Transactional
@@ -147,5 +139,10 @@ public class ProjectService {
             }
         }
         return false;
+    }
+
+    public Integer getProjectBySlug(String slug) {
+        Optional<Project> project = projectRepository.findBySlug(slug);
+        return project != null ? project.get().getProjectId(): null;
     }
 }

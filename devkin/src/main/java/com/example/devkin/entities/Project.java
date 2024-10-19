@@ -26,6 +26,9 @@ public class Project {
     @Column(nullable = false)
     private String language;
 
+    @Column(unique = true)
+    private String slug;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
@@ -141,4 +144,11 @@ public class Project {
         this.description = description;
     }
 
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
 }

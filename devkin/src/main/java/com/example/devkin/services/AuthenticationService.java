@@ -3,6 +3,7 @@ import com.example.devkin.dtos.LoginUserDto;
 import com.example.devkin.dtos.RegisterUserDto;
 import com.example.devkin.entities.User;
 import com.example.devkin.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +31,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User signup(RegisterUserDto input) {
         User user = new User();
         user.setName(input.getName());
@@ -39,6 +41,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -51,6 +54,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    @Transactional
     public User authenticateOAuth2User(OAuth2User oAuth2User) {
         String githubEmail = oAuth2User.getAttribute("email");
         String githubUsername = oAuth2User.getAttribute("login");

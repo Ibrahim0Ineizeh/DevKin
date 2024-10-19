@@ -12,6 +12,7 @@ public class ProjectDto {
     private String url;
     private LocalDateTime lastModified;
     private LocalDateTime createdAt;
+    private String slug;
 
     public String getName() {
         return name;
@@ -68,4 +69,13 @@ public class ProjectDto {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
 }

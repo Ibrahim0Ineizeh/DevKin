@@ -26,12 +26,12 @@ public class FileController {
             @ModelAttribute FileDto fileDto) {
         try {
             // Fetch ownerId and projectId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
             Integer projectId = project.getProjectId();
 
             // Construct file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() +
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/";
 
@@ -56,11 +56,11 @@ public class FileController {
             @ModelAttribute FileDto fileDto) {
         try {
             // Fetch ownerId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
 
             // Construct file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() +
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/" + fileDto.getFileName();
             fileStorageService.updateFileContents(filePath, file.getBytes(), file.getContentType());
@@ -75,11 +75,11 @@ public class FileController {
     public ResponseEntity<String> renameFile(@ModelAttribute FileDto fileDto) {
         try {
             // Fetch ownerId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
 
             // Construct old file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() +
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/" + fileDto.getFileName();
             fileStorageService.updateFileName(filePath, fileDto.getNewFileName());
@@ -94,11 +94,11 @@ public class FileController {
     public ResponseEntity<String> deleteFile(@ModelAttribute FileDto fileDto) {
         try {
             // Fetch ownerId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
 
             // Construct file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() + "/" + fileDto.getFileName();
+            String filePath = "projects/" + ownerId + "/" + project.getName() + "/" + fileDto.getFileName();
             fileStorageService.deleteFile(filePath);
             return new ResponseEntity<>("File deleted successfully", HttpStatus.NO_CONTENT);
         } catch (Exception e) {

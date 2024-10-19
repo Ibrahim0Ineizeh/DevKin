@@ -14,7 +14,6 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-
     public List<User> allUsers() {
         List<User> users = new ArrayList<>();
 

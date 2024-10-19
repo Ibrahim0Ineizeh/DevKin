@@ -2,6 +2,7 @@ package com.example.devkin.controllers;
 
 import com.example.devkin.dtos.CreateProjectDto;
 import com.example.devkin.dtos.ProjectDto;
+import com.example.devkin.dtos.SlugProjectDto;
 import com.example.devkin.entities.Project;
 import com.example.devkin.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,9 @@ public class ProjectController {
     }
 
     // Get a project by its ID
-    @GetMapping("/{projectId}")
-    public ResponseEntity<ProjectDto> getProjectById(@PathVariable Integer projectId) {
-        ProjectDto project = projectService.getProjectById(projectId);
+    @GetMapping("/get")
+    public ResponseEntity<ProjectDto> getProjectBySlug(@RequestBody String projectSlug) {
+        ProjectDto project = projectService.getProjectById(projectService.getProjectBySlug(projectSlug));
         if (project != null) {
             return new ResponseEntity<>(project, HttpStatus.OK);
         } else {
@@ -63,11 +64,10 @@ public class ProjectController {
     }
 
     // Update a project's information
-    @PutMapping("/{projectId}")
+    @PutMapping("/update")
     public ResponseEntity<ProjectDto> updateProject(
-            @PathVariable Integer projectId,
-            @RequestBody CreateProjectDto projectDetails) {
-        ProjectDto updatedProject = projectService.updateProject(projectId, projectDetails);
+            @RequestBody SlugProjectDto slugProjectDto) {
+        ProjectDto updatedProject = projectService.updateProject(projectService.getProjectBySlug(slugProjectDto.getSlug()), slugProjectDto);
         if (updatedProject != null) {
             return new ResponseEntity<>(updatedProject, HttpStatus.OK);
         } else {
@@ -76,10 +76,10 @@ public class ProjectController {
     }
 
     // Delete a project
-    @DeleteMapping("/{projectId}")
-    public ResponseEntity<Boolean> deleteProject(@PathVariable Integer projectId) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Boolean> deleteProject(@RequestBody String projectSlug) {
         try {
-            return new ResponseEntity<>( projectService.deleteProject(projectId),HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>( projectService.deleteProject(projectService.getProjectBySlug(projectSlug)),HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(false,HttpStatus.INTERNAL_SERVER_ERROR);
         }
