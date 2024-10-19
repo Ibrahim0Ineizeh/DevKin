@@ -9,7 +9,7 @@ public class ProjectHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer historyId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 

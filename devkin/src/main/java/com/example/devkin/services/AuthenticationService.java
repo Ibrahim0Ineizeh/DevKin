@@ -5,6 +5,8 @@ import com.example.devkin.entities.User;
 import com.example.devkin.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -61,5 +63,13 @@ public class AuthenticationService {
                     newUser.setPassword("");
                     return userRepository.save(newUser);
                 });
+    }
+
+    public User authenticatedUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+        User currentUser = userRepository.findByEmail(user.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return currentUser;
     }
 }

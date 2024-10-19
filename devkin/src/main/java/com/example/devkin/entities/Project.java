@@ -7,17 +7,24 @@ import java.util.Set;
 @Table(name = "Project")
 public class Project {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(nullable = false)
     private Integer projectId;
 
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
-    private int size = 0;
+    private long size = 0;
 
     @Column(nullable = false)
     private String url;
+
+    @Column(nullable = true)
+    private String description;
+
+    @Column(nullable = false)
+    private String language;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
@@ -40,6 +47,12 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<ProjectHistory> projectHistories;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
+    private Set<File> files;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE)
+    private Set<Folder> folder;
+
     public Integer getProjectId() {
         return projectId;
     }
@@ -56,11 +69,11 @@ public class Project {
         this.name = name;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 
-    public void setSize(int size) {
+    public void setSize(long size) {
         this.size = size;
     }
 
@@ -110,6 +123,22 @@ public class Project {
 
     public void setProjectHistories(Set<ProjectHistory> projectHistories) {
         this.projectHistories = projectHistories;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

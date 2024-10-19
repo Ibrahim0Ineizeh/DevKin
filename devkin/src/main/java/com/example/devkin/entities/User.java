@@ -109,4 +109,8 @@ public class User implements UserDetails {
     public void setOwnedProjects(Set<Project> ownedProjects) {
         this.ownedProjects = ownedProjects;
     }
+
+    public Integer getId() {
+        return id;
+    }
 }
