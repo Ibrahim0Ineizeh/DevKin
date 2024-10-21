@@ -2,21 +2,23 @@ version: '3.8'
 
 services:
   mysql:
+    container_name: database
     build:
       context: ./database
       dockerfile: Dockerfile
-    volumes:
-      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
-      test: "exit 0" # Replace with proper MySQL health check logic
+      test:  ["CMD-SHELL", "mysqladmin ping -h localhost -u root --password=userpassword"]
       interval: 10s
+      timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
       - back_network
 
   backend:
+    container_name: backend-SpringBoot
     build:
       context: ./devkin
       dockerfile: Dockerfile
@@ -31,22 +33,45 @@ services:
     networks:
       - front_network
       - back_network
+      - minio-network
 
   frontend:
+    container_name: frontend-React
     build:
       context: ./devkin-frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:5173"
+      - "80:80"
     networks:
       - front_network
+      - minio-network
+    
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"  # MinIO server port
+      - "9001:9001"  # MinIO console port
+    environment:
+      MINIO_ACCESS_KEY: minioadmin  
+      MINIO_SECRET_KEY: minioadmin  
+      MINIO_BUCKET: devkin
+    volumes:
+      - minio_data:/data 
+    command: server /data
+    networks:
+      - minio-network
 
 volumes:
   mysql_data:
+  minio_data:
 
 networks:
   front_network:
     driver: bridge
 
   back_network:
+    driver: bridge
+
+  minio-network:
     driver: bridge

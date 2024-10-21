@@ -1,0 +1,92 @@
+/* Dashboard container layout */
+body {
+    margin: 0;
+    font-family: "Kanit", sans-serif;
+    background-color: #f4f4f4; /* Light mode background */
+    color: #333; /* Light mode text */
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+.dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    padding-top: 40px;
+    padding-bottom: 100px;
+  }
+  
+  /* Left side: Project cards section */
+  .project-list {
+    margin: 0px 5px;
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Align items to the left */
+    gap: 20px;
+  }
+  
+  /* Project card styling */
+  .project-card {
+    background-color: #ffc370cc;
+    padding: 15px;
+    width: 250px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+  }
+  
+  .project-card h3 {
+    margin: 0 0 10px;
+  }
+  
+  /* Right side: Create Project Button container */
+  .right-column {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 500px;
+    padding: 30px 10px;
+    border-radius: 10px;
+  }
+
+  .dark-mode .right-column{
+    background-color: #292929; 
+  }
+
+   .right-column{
+    background-color: #f5d5a8; 
+  }
+  
+  .create-project-btn {
+    background-color: #4793AF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+    margin: 0px auto;
+  }
+  
+  .create-project-btn:hover {
+    background-color: #3b7695;
+  }
+  
+  /* Dark Mode */
+  .dark-mode .project-card {
+    background-color: #292929;
+    color: #f4f4f4;
+  }
+  
+  .dark-mode .create-project-btn {
+    background-color: #81c7ff;
+    color: #000;
+  }
+  
+  .dark-mode .create-project-btn:hover {
+    background-color: #6bb0e0;
+  }
+  

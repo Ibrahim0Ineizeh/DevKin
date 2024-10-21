@@ -1,0 +1,137 @@
+/* Navbar styling */
+.navbar {
+  background-color: #FFC470; /* Light mode background */
+  padding: 20px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.navbar.dark {
+  background-color: #3C3C3C; /* Dark mode background */
+}
+
+.navbar-logo {
+  position: absolute;
+  left: 0;
+}
+
+/* Logo styling */
+.navbar-logo h1 {
+  color: #4793AF; /* Light mode logo color */
+  margin: 0;
+  font-size: 2rem;
+  margin-left: 10px;
+}
+
+.navbar.dark .navbar-logo h1 {
+  color: #81c7ff; /* Dark mode logo color */
+}
+
+/* Navigation links styling */
+.navbar-links {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex: 1;
+  font-size: 1.2rem;
+}
+
+.navbar-link {
+  color: #DD5746; /* Light mode link color */
+  text-decoration: none;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.navbar.dark .navbar-link {
+  color: #B9B9B9; /* Dark mode link color */
+}
+
+.navbar-link:hover {
+  background-color: #f7af4b; /* Light mode hover */
+}
+
+.navbar.dark .navbar-link:hover {
+  background-color: #6F6F6F; /* Dark mode hover */
+}
+
+.navbar-username {
+  margin: auto 0;
+  font-weight: 600;
+  color: #4793AF;
+}
+
+.navbar.dark .navbar-username{
+  color:#81c7ff;
+}
+
+
+.navbar-auth {
+  display: flex;
+  gap: 15px;
+  position: absolute;
+  right: 0;
+  margin-right: 10px;
+}
+
+.navbar-signup {
+  color: #4793AF; /* Light mode text color */
+  background-color: #8b322c; /* No background */
+  border: 2px solid #8B322C; /* White border */
+  border-radius: 10px; /* Smooth edges */
+  padding: 8px 12px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+  font-style: bold;
+}
+
+.navbar.dark .navbar-signup {
+  color: #B9B9B9; /* Dark mode text color */
+  background-color: hsl(0, 0%, 12%);
+  border: 2px solid #B9B9B9; /* Dark mode border color */
+}
+
+.navbar-signup:hover {
+  background-color: #4793AF; /* Light mode background color on hover */
+  color: #333; /* Light mode text color change on hover */
+  border: 2px solid #367085; /* Light mode border on hover */
+}
+
+.navbar.dark .navbar-signup:hover {
+  background-color: #81c7ff; /* Dark mode background color on hover */
+  color: #EAEAEA; /* Dark mode text color change on hover */
+  border: 2px solid #B9B9B9; /* Dark mode border on hover */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .navbar-auth {
+    flex-direction: column;
+    align-items: center;
+    position: static;
+    margin-top: 10px;
+  }
+
+  .navbar-logo {
+    position: static;
+    margin-bottom: 10px;
+  }
+}
