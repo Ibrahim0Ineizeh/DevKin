@@ -4,6 +4,7 @@ import com.example.devkin.entities.User;
 import com.example.devkin.repositories.UserRepository;
 import com.example.devkin.services.AuthenticationService;
 import com.example.devkin.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,17 +20,15 @@ import java.util.List;
 @RequestMapping("/users")
 @RestController
 public class UserController {
-    private final UserService userService;
-    private final UserRepository userRepository;
-    private final AuthenticationService authenticationService;
 
-    public UserController(UserService userService,
-                          UserRepository userRepository,
-                          AuthenticationService authenticationService) {
-        this.userService = userService;
-        this.userRepository = userRepository;
-        this.authenticationService = authenticationService;
-    }
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @GetMapping("/me")
     public ResponseEntity<UserInfoDto> authenticatedUser() {

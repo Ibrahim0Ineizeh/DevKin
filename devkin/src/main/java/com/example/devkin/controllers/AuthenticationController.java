@@ -5,6 +5,8 @@ import com.example.devkin.dtos.RegisterUserDto;
 import com.example.devkin.responses.LoginResponse;
 import com.example.devkin.services.AuthenticationService;
 import com.example.devkin.services.JwtService;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
-    private final JwtService jwtService;
 
-    private final AuthenticationService authenticationService;
+    @Autowired
+    private JwtService jwtService;
 
-    public AuthenticationController(JwtService jwtService, AuthenticationService authenticationService) {
-        this.jwtService = jwtService;
-        this.authenticationService = authenticationService;
-    }
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @PostMapping("/signup")
     public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
