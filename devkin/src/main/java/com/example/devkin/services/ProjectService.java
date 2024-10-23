@@ -1,8 +1,8 @@
 package com.example.devkin.services;
 
-import com.example.devkin.dtos.CreateProjectDto;
-import com.example.devkin.dtos.ProjectDto;
-import com.example.devkin.dtos.SlugProjectDto;
+import com.example.devkin.dtos.*;
+import com.example.devkin.entities.File;
+import com.example.devkin.entities.Folder;
 import com.example.devkin.entities.Project;
 import com.example.devkin.entities.User;
 import com.example.devkin.mappings.ProjectMapper;
@@ -17,8 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -139,6 +138,45 @@ public class ProjectService {
             }
         }
         return false;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProjectDto> getProjectsByUserEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Fetch all projects where the user is either the owner or part of the developers
+        List<Project> projects = projectRepository.findByOwnerOrDeveloper(user);
+
+        return projects.stream()
+                .map(project -> projectMapper.toProjectDto(project))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<FileStructureDto> getProjectFiles(Integer projectId) {
+        Optional<Project> projectOptional = projectRepository.findById(projectId);
+        if (projectOptional.isEmpty()) {
+            return Collections.emptyList(); // or throw an exception
+        }
+
+        Project project = projectOptional.get();
+
+        // Map all files in the project
+        List<FileStructureDto> fileStructureDtos = project.getFiles().stream()
+                .map(file -> {
+                    FileStructureDto fileStructureDto = new FileStructureDto();
+                    fileStructureDto.setFileId(file.getFileId());
+                    fileStructureDto.setFileName(file.getFileName());
+                    fileStructureDto.setFilePath(file.getFilePath());
+                    fileStructureDto.setFileType(file.getFileType());
+                    fileStructureDto.setFileSize(file.getFileSize());
+                    fileStructureDto.setLastModefied(file.getLastModified());
+                    return fileStructureDto;
+                })
+                .collect(Collectors.toList());
+
+        return fileStructureDtos;
     }
 
     public Integer getProjectBySlug(String slug) {

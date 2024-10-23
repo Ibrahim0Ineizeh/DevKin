@@ -1,0 +1,156 @@
+/* Project Page Container */
+.project-page-container {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    height: 90vh; /* Full height of the viewport */
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* Project Header Section with Reduced Height */
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 5px; /* Reduced padding for smaller height */
+    height: 50px; /* Set a fixed, smaller height for the header */
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Settings Button Styling */
+  .settings-btn {
+    background-color: #81c7ff;
+    color: black;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 0px;
+  }
+  
+  .settings-btn:hover {
+    background-color: #6bb0e0;
+  }
+  
+  /* Columns Container */
+  .columns-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* Three columns by default */
+    gap: 5px; /* Reduced gap between columns */
+    height: calc(100vh - 60px); /* Remaining height minus header and margin */
+    overflow: hidden; /* Prevents columns from exceeding the view height */
+  }
+
+  .columns-container h2 {
+    margin: 0px 0px;
+  }
+
+  .columns-container p {
+    margin: 0; /* Reset margins */
+    width: 100%; /* Full width */
+    height: 500px; /* Full height */
+    display: flex; /* Enable flexbox on the paragraph */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text inside the paragraph */
+  }
+  
+  .column {
+    padding: 15px;
+    background-color: #ffc370cc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    overflow-y: auto; /* Add scroll if content exceeds column height */
+  }
+  
+  /* Specific Column Heights */
+  .file-explorer, .code-editor, .output-console {
+    height: 100%; /* Full height for all columns */
+  }
+  
+  /* Code Area Styling */
+  .code-area {
+    width: 100%;
+    height: calc(100% - 50px); /* Full height minus padding for buttons */
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Buttons inside columns */
+  button {
+    background-color: #4793AF;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  
+  button:hover {
+    background-color: #3b7695;
+  }
+  
+  /* Dark Mode Adjustments */
+  .dark-mode .column {
+    background-color: #292929;
+    color: #f4f4f4;
+  }
+  
+  .dark-mode .settings-btn {
+    background-color: #6bb0e0;
+    color: black;
+  }
+  
+  .dark-mode .settings-btn:hover {
+    background-color: #81c7ff;
+  }
+  
+  .codeEditor{
+    margin-bottom: 10px;
+  }
+
+  .code-area::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .code-area::-webkit-scrollbar-thumb {
+    background-color: #81c7ff;
+    border-radius: 10px;
+  }
+  
+  .code-area::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+  }
+  
+  /* Dark mode scrollbars */
+  .dark-mode .code-area::-webkit-scrollbar-thumb {
+    background-color: #6bb0e0;
+  }
+  
+  /* Responsive Layout for Small Screens */
+  @media (max-width: 768px) {
+    .columns-container {
+      grid-template-columns: 1fr; /* Stack columns vertically */
+      gap: 20px; /* Increase gap between stacked columns */
+    }
+  
+    /* Ensure full height for stacked columns */
+    .column {
+      height: auto;
+      min-height: 300px;
+    }
+  
+    .code-area {
+      height: 200px; /* Adjust code area height for smaller screens */
+    }
+  }
+  

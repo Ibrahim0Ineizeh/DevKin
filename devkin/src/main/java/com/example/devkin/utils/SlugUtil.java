@@ -1,6 +1,7 @@
 package com.example.devkin.utils;
 
 import com.example.devkin.repositories.ProjectRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.Normalizer;
@@ -10,19 +11,15 @@ import java.util.UUID;
 @Component
 public class SlugUtil {
 
-    private final ProjectRepository projectRepository;
-
-    public SlugUtil(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
+    @Autowired
+    private ProjectRepository projectRepository;
 
     public static String toSlug(String input) {
         String nonAccent = Normalizer.normalize(input, Normalizer.Form.NFD)
                 .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-        String slug = nonAccent.toLowerCase(Locale.ROOT)
+        return nonAccent.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9]+", "-")  // Replace non-alphanumeric with hyphen
-                .replaceAll("^-|-$", "");       // Remove leading or trailing hyphens
-        return slug;
+                .replaceAll("^-|-$", "");
     }
 
     public String generateUniqueSlug(String projectName) {

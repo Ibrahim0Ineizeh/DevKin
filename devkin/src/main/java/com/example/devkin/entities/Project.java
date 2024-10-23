@@ -151,4 +151,20 @@ public class Project {
     public void setSlug(String slug) {
         this.slug = slug;
     }
+
+    public Set<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<File> files) {
+        this.files = files;
+    }
+
+    public Set<Folder> getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Set<Folder> folder) {
+        this.folder = folder;
+    }
 }

@@ -10,6 +10,7 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import Dashboard from "./Pages/Dashboard"
 import DashboardNavbar from './DashboardNavbar';
 import CreateProject from './Pages/CreateProject';
+import ProjectPage from './Pages/ProjectPage';
 
 function App() {
   return (
@@ -69,6 +70,17 @@ function App() {
               <>
                 <DashboardNavbar />
                 <CreateProject />
+              </>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:slug"
+          element={
+            <ProtectedRoute>
+              <>
+                <DashboardNavbar />
+                <ProjectPage />
               </>
             </ProtectedRoute>
           }

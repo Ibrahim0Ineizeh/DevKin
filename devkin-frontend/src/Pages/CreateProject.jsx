@@ -12,17 +12,41 @@ const CreateProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Send project data to backend (e.g., via fetch or axios)
-    // Example:
-    // await fetch('/api/projects', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ projectName, description }),
-    //   headers: { 'Content-Type': 'application/json' }
-    // });
+    
+    const authToken = localStorage.getItem('authToken'); // Get the auth token from localStorage
+    const trimmedProjectName = projectName.trim();
+    // Send project data to the backend
+    try {
+      const response = await fetch('http://localhost:8080/dashboard/project/create', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: trimmedProjectName,
+          description,
+          language,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`, // Include the auth token
+        },
+      });
 
-    // After successful creation, navigate back to the dashboard
-    navigate('/dashboard');
+      if (!response.ok) {
+        throw new Error('Failed to create project');
+      }
+
+      // Clear inputs after successful creation
+      setProjectName('');
+      setDescription('');
+      setLanguage('');
+
+      // Navigate back to the dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error:', error);
+      // Handle error (e.g., display error message)
+    }
   };
+
 
   return (
     <div className={`create-project-container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>

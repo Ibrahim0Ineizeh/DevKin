@@ -5,7 +5,9 @@ import com.example.devkin.entities.Project;
 import com.example.devkin.repositories.ProjectRepository;
 import com.example.devkin.services.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,9 +74,8 @@ public class FileController {
     }
 
     @PutMapping("/rename")
-    public ResponseEntity<String> renameFile(@ModelAttribute FileDto fileDto) {
+    public ResponseEntity<String> renameFile(@RequestBody FileDto fileDto) {
         try {
-            // Fetch ownerId based on projectName from FileDto
             Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
 
@@ -90,8 +91,37 @@ public class FileController {
         }
     }
 
+    @PostMapping("/get-contents")
+    public ResponseEntity<byte[]> getFileContents(@RequestBody FileDto fileDto) {
+        try {
+            // Fetch the project based on projectSlug
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).orElseThrow(() -> new RuntimeException("Project not found"));
+            Integer ownerId = project.getOwner().getId();
+
+            // Construct the file path
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
+                    (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
+                    "/" + fileDto.getFileName();
+
+            // Get file contents from the service
+            byte[] fileData = fileStorageService.getFileContents(filePath);
+            String contentType = fileStorageService.getFileContentType(filePath);
+
+            // Set response headers and return the file data
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(contentType));
+            headers.setContentLength(fileData.length);
+
+            return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Use proper logging in production
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteFile(@ModelAttribute FileDto fileDto) {
+    public ResponseEntity<String> deleteFile(@RequestBody FileDto fileDto) {
         try {
             // Fetch ownerId based on projectName from FileDto
             Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();

@@ -1,8 +1,6 @@
 package com.example.devkin.controllers;
 
-import com.example.devkin.dtos.CreateProjectDto;
-import com.example.devkin.dtos.ProjectDto;
-import com.example.devkin.dtos.SlugProjectDto;
+import com.example.devkin.dtos.*;
 import com.example.devkin.entities.Project;
 import com.example.devkin.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +41,7 @@ public class ProjectController {
 
     // Get a project by its ID
     @GetMapping("/get")
-    public ResponseEntity<ProjectDto> getProjectBySlug(@RequestBody String projectSlug) {
+    public ResponseEntity<ProjectDto> getProjectBySlug(@RequestParam String projectSlug) {
         ProjectDto project = projectService.getProjectById(projectService.getProjectBySlug(projectSlug));
         if (project != null) {
             return new ResponseEntity<>(project, HttpStatus.OK);
@@ -75,7 +73,28 @@ public class ProjectController {
         }
     }
 
-    // Delete a project
+    @GetMapping("/user-projects")
+    public ResponseEntity<List<ProjectDto>> getProjectsByUserEmail(@RequestParam String email) {
+        try {
+            List<ProjectDto> projects = projectService.getProjectsByUserEmail(email);
+            return new ResponseEntity<>(projects, HttpStatus.OK);
+        } catch (UsernameNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/structure")
+    public ResponseEntity<List<FileStructureDto>> getProjectFiles(@RequestParam String projectSlug) {
+        List<FileStructureDto> folders = projectService.getProjectFiles(projectService.getProjectBySlug(projectSlug));
+        if (folders != null) {
+            return new ResponseEntity<>(folders, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Boolean> deleteProject(@RequestBody String projectSlug) {
         try {

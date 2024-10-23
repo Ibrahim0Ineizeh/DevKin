@@ -12,7 +12,7 @@ public class File {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private Long fileId;
+    private Integer fileId;
 
     @Column(nullable = false)
     private String fileName;
@@ -45,11 +45,11 @@ public class File {
 
     // Getters and Setters
 
-    public Long getFileId() {
+    public Integer getFileId() {
         return fileId;
     }
 
-    public void setFileId(Long fileId) {
+    public void setFileId(Integer fileId) {
         this.fileId = fileId;
     }
 

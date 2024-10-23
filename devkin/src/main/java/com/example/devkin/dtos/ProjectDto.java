@@ -8,11 +8,12 @@ public class ProjectDto {
     private String name;
     private String description;
     private String language;
+    private String slug;
     private long size;
     private String url;
     private LocalDateTime lastModified;
     private LocalDateTime createdAt;
-    private String slug;
+
 
     public String getName() {
         return name;

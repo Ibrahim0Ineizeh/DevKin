@@ -226,6 +226,36 @@ public class FileStorageService {
     }
 
     @Transactional
+    public byte[] getFileContents(String filePath) {
+        try {
+            // Download the file as an InputStream from Minio
+            GetObjectArgs getObjectArgs = GetObjectArgs.builder()
+                    .bucket("devkin")
+                    .object(filePath)
+                    .build();
+            try (var inputStream = minioClient.getObject(getObjectArgs)) {
+                return inputStream.readAllBytes();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get file contents", e);
+        }
+    }
+
+    @Transactional
+    public String getFileContentType(String filePath) {
+        try {
+            StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder()
+                    .bucket("devkin")
+                    .object(filePath)
+                    .build());
+
+            return stat.contentType();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to get file content type", e);
+        }
+    }
+
+    @Transactional
     public void deleteFile(String filePath) {
         try {
             minioClient.removeObject(
