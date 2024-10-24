@@ -135,7 +135,56 @@
   .dark-mode .code-area::-webkit-scrollbar-thumb {
     background-color: #6bb0e0;
   }
+
+  .backbutton {
+    margin: 5px;
+    padding: 10px 50px;
+    width: 10%;
+  }
+
+  .tabs {
+    width: 100%;
+    margin: 10px;
+  }
+
+  .projectSettings{
+    margin: 5px 10px;
+  }
+
+  .tabs button {
+    width: 49%;
+    padding: 10px 50px;
+  }
+
+  .tab-content{
+    margin: 10px;
+  }
   
+  .delete-button {
+    width: 10%;
+    margin: 5px;
+    background-color: red; /* Red background for delete button */
+    color: #f0f0f0; /* White text for contrast */
+    padding: 10px 15px; /* Padding for better touch target */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+    margin-top: 5px; /* Space above the button */
+    
+}
+
+.delete-button:hover {
+    background-color: darkred; /* Darker shade on hover */
+}
+
+.settingControl {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center; 
+  margin-bottom: 0px; 
+}
+
   /* Responsive Layout for Small Screens */
   @media (max-width: 768px) {
     .columns-container {

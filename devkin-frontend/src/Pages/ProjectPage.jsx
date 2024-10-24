@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../styles/ProjectPage.css';
 import { useTheme } from '../Components/Theme';
 import MonacoEditor from '@monaco-editor/react';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import global from 'global';
 
 const FileExplorer = ({ files, onFileSelect }) => (
     <div>
@@ -50,41 +53,106 @@ const ProjectPage = () => {
     const [showRenamePopup, setShowRenamePopup] = useState(false);
     const [fileToRename, setFileToRename] = useState('');
     const [newFileName, setNewFileName] = useState('');
+    const [code, setCode] = useState(''); 
+    const [stompClient, setStompClient] = useState(null);
+    const stompClientRef = useRef(null);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/dashboard/project/get?projectSlug=${slug}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
-            },
-        })
-            .then((response) => {
-                if (!response.ok) throw new Error('Failed to fetch project details');
-                return response.json();
-            })
-            .then((data) => {
-                setProject(data);
-                localStorage.setItem('projectInfo', JSON.stringify(data));
-                return fetch(`http://localhost:8080/dashboard/project/structure?projectSlug=${slug}`, {
+        const fetchProjectData = async () => {
+            try {
+                // Fetch project details
+                const projectResponse = await fetch(`http://localhost:8080/dashboard/project/get?projectSlug=${slug}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
                     },
                 });
-            })
-            .then((response) => {
-                if (!response.ok) throw new Error('Failed to fetch project structure');
-                return response.json();
-            })
-            .then((structure) => setProjectStructure(structure))
-            .catch((err) => console.error(err.message));
-
-        return () => {
-            localStorage.removeItem('projectInfo');
+    
+                if (!projectResponse.ok) throw new Error('Failed to fetch project details');
+    
+                const projectData = await projectResponse.json();
+                setProject(projectData);
+                localStorage.setItem('projectInfo', JSON.stringify(projectData));
+    
+                // Fetch project structure after project details
+                const structureResponse = await fetch(`http://localhost:8080/dashboard/project/structure?projectSlug=${slug}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    },
+                });
+    
+                if (!structureResponse.ok) throw new Error('Failed to fetch project structure');
+    
+                const structureData = await structureResponse.json();
+                setProjectStructure(structureData);
+            } catch (err) {
+                console.error(err.message);
+            }
         };
-    }, [slug]);
+    
+        const connectWebSocket = () => {
+            const token = localStorage.getItem('authToken'); // Ensure this token is correctly set
+        
+            // Append the token as a query parameter to the WebSocket URL
+            const socket = new SockJS(`http://localhost:8080/ws?token=${token}`); // Ensure this URL is correct
+            const stompClient = Stomp.over(socket);
+        
+            stompClient.connect(
+                {}, // No headers needed since the token is in the URL
+                (frame) => {
+                    console.log('Connected to WebSocket:', frame);
+                    stompClient.subscribe(`/topic/editor/${slug}`, (message) => {
+                        const updatedProject = JSON.parse(message.body);
+                        console.log('Received updated project:', updatedProject);
+                        if (updatedProject && updatedProject.code) {
+                            setFileContent(updatedProject.code); // Ensure this is called when updates are received
+                        }
+                    });
+                },
+                (error) => {
+                    console.error('WebSocket error:', error);
+                }
+            );
+        
+            stompClientRef.current = stompClient; // Set the ref to the stompClient
+        };
+    
+        fetchProjectData().then(() => {
+            const stompClient = connectWebSocket();
+
+            // Cleanup function
+            return () => {
+                localStorage.removeItem('projectInfo');
+                if (stompClient) {
+                    stompClient.disconnect(() => {
+                        console.log('WebSocket disconnected');
+                    });
+                }
+            };
+        });
+    }, [slug]);   
+    
+    const handleCodeChange = (newValue) => {
+        // Update the file content with the new value from the editor
+        setFileContent(newValue);
+
+        if (stompClientRef.current) {
+            const message = {
+                code: newValue,
+                user: localStorage.getItem("email"),
+                timestamp: Date.now(),
+                file: selectedFile,
+            };
+
+            // Send the message over the WebSocket
+            stompClientRef.current.send(`/app/edit/${slug}`, {}, JSON.stringify(message));
+        } else {
+            console.log('stompClient is not connected yet');
+        }
+    };
 
     const handleSettings = () => {
         navigate(`/projects/${slug}/settings`);
@@ -209,9 +277,38 @@ const handleDeleteSubmit = async () => {
             .catch((err) => console.error(err.message));
     };
 
-    const handleExecuteCode = () => {
-        setOutput('Code executed successfully.');
-    };
+    const handleExecuteCode = async () => {
+        const executeDto = {
+            language: "python", 
+            fileDto: {
+                fileName: selectedFile,
+                filePath: "",
+                newFileName: "",
+                projectSlug: slug,
+            }
+        };
+    
+        try {
+            const response = await fetch('http://localhost:8080/dashboard/project/code/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                },
+                body: JSON.stringify(executeDto),
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                setOutput(`Code executed successfully: ${result.result}`);
+            } else {
+                const errorResult = await response.json();
+                setOutput(`Execution failed: ${errorResult.message}`);
+            }
+        } catch (error) {
+            setOutput(`Error occurred: ${error.message}`);
+        }
+    };     
 
     const handleClearOutput = () => {
         setOutput('');
@@ -308,7 +405,7 @@ const handleDeleteSubmit = async () => {
                                 language="javascript"
                                 theme={isDarkMode ? 'vs-dark' : 'light'}
                                 value={fileContent}
-                                onChange={(newValue) => setFileContent(newValue)}
+                                onChange={handleCodeChange}
                             /></div>
                           
                             <button onClick={handleSaveCode}>Save</button>

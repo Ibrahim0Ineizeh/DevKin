@@ -2,7 +2,7 @@ package com.example.devkin.dtos;
 
 public class ExecuteDto {
     private String language;
-    private String code;
+    private FileDto fileDto;
 
     public String getLanguage() {
         return language;
@@ -12,12 +12,12 @@ public class ExecuteDto {
         this.language = language;
     }
 
-    public String getCode() {
-        return code;
+
+    public FileDto getFileDto() {
+        return fileDto;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setFileDto(FileDto fileDto) {
+        this.fileDto = fileDto;
     }
-
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,6 +25,9 @@ public class ExecutionManager {
     @Autowired
     private ExecutionService executionService;
 
+    @Autowired
+    private FileStorageService fileStorageService;
+
     // A method to add requests to the queue
     public void submitExecutionRequest(ExecutionRequestsDto request) {
         executionQueue.add(request);
@@ -39,7 +43,9 @@ public class ExecutionManager {
             if (request != null) {
                 CompletableFuture.runAsync(() -> {
                     try {
-                        String result = executionService.executeCode(request.getCodeRequest().getLanguage(), request.getCodeRequest().getCode());
+                        byte[] fileData = fileStorageService.getFileContents(fileStorageService.calcFilePath(request.getCodeRequest().getFileDto()));
+                        String code = new String(fileData, StandardCharsets.UTF_8);
+                        String result = executionService.executeCode(request.getCodeRequest().getLanguage(), code);
                         messagingTemplate.convertAndSend("/topic/status/" + request.getSessionId(),
                                 new ExecutionResultDto("COMPLETED", result));
                     } catch (Exception e) {

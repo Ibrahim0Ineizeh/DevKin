@@ -11,6 +11,7 @@ import Dashboard from "./Pages/Dashboard"
 import DashboardNavbar from './DashboardNavbar';
 import CreateProject from './Pages/CreateProject';
 import ProjectPage from './Pages/ProjectPage';
+import ProjectSettings from "./Pages/ProjectSettings"
 
 function App() {
   return (
@@ -81,6 +82,17 @@ function App() {
               <>
                 <DashboardNavbar />
                 <ProjectPage />
+              </>
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/projects/:slug/settings"
+          element={
+            <ProtectedRoute>
+              <>
+                <DashboardNavbar />
+                <ProjectSettings />
               </>
             </ProtectedRoute>
           }

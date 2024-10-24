@@ -11,10 +11,15 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
+    "cors": "^2.8.5",
+    "global": "^4.4.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "react-router-dom": "^6.26.2",
+    "sockjs-client": "^1.6.1",
+    "stomp": "^0.1.1",
+    "stompjs": "^2.3.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

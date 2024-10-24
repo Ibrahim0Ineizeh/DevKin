@@ -28,9 +28,10 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        String token = request.getHeaders().getFirst("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring(7);
+        // Extract token from query parameters
+        String token = request.getURI().getQuery().split("token=")[1]; // Adjust to safely extract the token
+        logger.warn(token);
+        if (token != null) {
             String userEmail = jwtService.extractUsername(token);
             if (userEmail != null) {
                 UserDetails userDetails = userService.loadUserByUsername(userEmail);
@@ -44,7 +45,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
                 logger.warn("Username could not be extracted from the token");
             }
         } else {
-            logger.warn("Authorization header is missing or does not contain a valid Bearer token");
+            logger.warn("Authorization token is missing or does not contain a valid Bearer token");
         }
         return false;
     }

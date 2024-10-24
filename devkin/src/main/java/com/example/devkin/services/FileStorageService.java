@@ -1,5 +1,6 @@
 package com.example.devkin.services;
 
+import com.example.devkin.dtos.FileDto;
 import com.example.devkin.entities.File;
 import com.example.devkin.entities.Folder;
 import com.example.devkin.entities.Project;
@@ -146,6 +147,13 @@ public class FileStorageService {
         try {
             String filePath = folderPath.endsWith("/") ? folderPath + fileName : folderPath + "/" + fileName;
 
+            // Check for duplicates
+            boolean fileExists = fileRepository.existsByFilePath(filePath);
+            if (fileExists) {
+                throw new RuntimeException("File already exists at this path: " + filePath);
+            }
+
+            // Upload the file to MinIO
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket("devkin")
@@ -168,12 +176,15 @@ public class FileStorageService {
                     .orElseThrow(() -> new RuntimeException("Project not found")));
 
             fileRepository.save(file);
+
+            // Update project size
             Optional<Project> p = projectRepository.findById(projectId);
             p.get().setSize(p.get().getSize() + fileSize);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create file", e);
         }
     }
+
 
     @Transactional
     public void updateFileName(String oldFilePath, String newFileName) {
@@ -270,5 +281,20 @@ public class FileStorageService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete file", e);
         }
+    }
+
+    public String calcFilePath(FileDto fileDto){
+        try {
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).orElseThrow(() -> new RuntimeException("Project not found"));
+            Integer ownerId = project.getOwner().getId();
+
+            return "projects/" + ownerId + "/" + project.getName() +
+                    (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
+                    "/" + fileDto.getFileName();
+        }
+        catch (Exception e){
+            throw new RuntimeException("Can't calculate the file path");
+        }
+
     }
 }
