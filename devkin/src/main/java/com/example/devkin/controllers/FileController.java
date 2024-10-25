@@ -5,7 +5,9 @@ import com.example.devkin.entities.Project;
 import com.example.devkin.repositories.ProjectRepository;
 import com.example.devkin.services.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,13 +27,11 @@ public class FileController {
             @RequestParam("file") MultipartFile file,
             @ModelAttribute FileDto fileDto) {
         try {
-            // Fetch ownerId and projectId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
             Integer projectId = project.getProjectId();
 
-            // Construct file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() +
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/";
 
@@ -45,7 +45,7 @@ public class FileController {
             );
             return new ResponseEntity<>("File uploaded successfully", HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace(); // Use proper logging in production
+            e.printStackTrace();
             return new ResponseEntity<>("Failed to upload file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -55,50 +55,69 @@ public class FileController {
             @RequestParam("file") MultipartFile file,
             @ModelAttribute FileDto fileDto) {
         try {
-            // Fetch ownerId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
 
-            // Construct file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() +
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/" + fileDto.getFileName();
             fileStorageService.updateFileContents(filePath, file.getBytes(), file.getContentType());
             return new ResponseEntity<>("File contents updated successfully", HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace(); // Use proper logging in production
+            e.printStackTrace();
             return new ResponseEntity<>("Failed to update file contents", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping("/rename")
-    public ResponseEntity<String> renameFile(@ModelAttribute FileDto fileDto) {
+    public ResponseEntity<String> renameFile(@RequestBody FileDto fileDto) {
         try {
-            // Fetch ownerId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
             Integer ownerId = project.getOwner().getId();
 
-            // Construct old file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() +
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/" + fileDto.getFileName();
             fileStorageService.updateFileName(filePath, fileDto.getNewFileName());
             return new ResponseEntity<>("File renamed successfully", HttpStatus.OK);
         } catch (Exception e) {
-            e.printStackTrace(); // Use proper logging in production
+            e.printStackTrace();
             return new ResponseEntity<>("Failed to rename file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteFile(@ModelAttribute FileDto fileDto) {
+    @PostMapping("/get-contents")
+    public ResponseEntity<byte[]> getFileContents(@RequestBody FileDto fileDto) {
         try {
-            // Fetch ownerId based on projectName from FileDto
-            Project project = projectRepository.findByName(fileDto.getProjectName());
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).orElseThrow(() -> new RuntimeException("Project not found"));
             Integer ownerId = project.getOwner().getId();
 
-            // Construct file path
-            String filePath = "projects/" + ownerId + "/" + fileDto.getProjectName() + "/" + fileDto.getFileName();
+            String filePath = "projects/" + ownerId + "/" + project.getName() +
+                    (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
+                    "/" + fileDto.getFileName();
+
+            byte[] fileData = fileStorageService.getFileContents(filePath);
+            String contentType = fileStorageService.getFileContentType(filePath);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(contentType));
+            headers.setContentLength(fileData.length);
+
+            return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteFile(@RequestBody FileDto fileDto) {
+        try {
+            Project project = projectRepository.findBySlug(fileDto.getProjectSlug()).get();
+            Integer ownerId = project.getOwner().getId();
+
+            String filePath = "projects/" + ownerId + "/" + project.getName() + "/" + fileDto.getFileName();
             fileStorageService.deleteFile(filePath);
             return new ResponseEntity<>("File deleted successfully", HttpStatus.NO_CONTENT);
         } catch (Exception e) {

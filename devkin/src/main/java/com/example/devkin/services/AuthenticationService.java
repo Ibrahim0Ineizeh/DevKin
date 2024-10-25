@@ -3,6 +3,8 @@ import com.example.devkin.dtos.LoginUserDto;
 import com.example.devkin.dtos.RegisterUserDto;
 import com.example.devkin.entities.User;
 import com.example.devkin.repositories.UserRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,22 +16,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService {
-    private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
-    private final AuthenticationManager authenticationManager;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public AuthenticationService(
-            UserRepository userRepository,
-            AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder
-    ) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
+    @Transactional
     public User signup(RegisterUserDto input) {
         User user = new User();
         user.setName(input.getName());
@@ -39,6 +36,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User authenticate(LoginUserDto input) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -51,6 +49,7 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    @Transactional
     public User authenticateOAuth2User(OAuth2User oAuth2User) {
         String githubEmail = oAuth2User.getAttribute("email");
         String githubUsername = oAuth2User.getAttribute("login");

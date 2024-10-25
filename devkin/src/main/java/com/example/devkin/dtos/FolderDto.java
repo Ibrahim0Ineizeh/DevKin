@@ -5,7 +5,7 @@ public class FolderDto {
     private String folderName;
     private String folderPath;
     private String newFolderName;
-    private String projectName;
+    private String projectSlug;
 
     public String getFolderName() {
         return folderName;
@@ -31,11 +31,11 @@ public class FolderDto {
         this.newFolderName = newFolderName;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getProjectSlug() {
+        return projectSlug;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setProjectSlug(String projectSlug) {
+        this.projectSlug = projectSlug;
     }
 }

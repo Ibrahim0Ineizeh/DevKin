@@ -8,10 +8,12 @@ public class ProjectDto {
     private String name;
     private String description;
     private String language;
+    private String slug;
     private long size;
     private String url;
     private LocalDateTime lastModified;
     private LocalDateTime createdAt;
+
 
     public String getName() {
         return name;
@@ -68,4 +70,13 @@ public class ProjectDto {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
 }
