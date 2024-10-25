@@ -8,9 +8,11 @@ services:
     ports:
       - "3306:3306"
     healthcheck:
-      test: "exit 0" # Replace with proper MySQL health check logic
+      test:  ["CMD-SHELL", "mysqladmin ping -h localhost -u root --password=userpassword"]
       interval: 10s
+      timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
       - back_network
 
