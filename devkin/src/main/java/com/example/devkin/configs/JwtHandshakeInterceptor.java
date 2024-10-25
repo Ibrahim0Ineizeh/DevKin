@@ -29,7 +29,7 @@ public class JwtHandshakeInterceptor implements HandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                    WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
         // Extract token from query parameters
-        String token = request.getURI().getQuery().split("token=")[1]; // Adjust to safely extract the token
+        String token = request.getURI().getQuery().split("token=")[1];
         logger.warn(token);
         if (token != null) {
             String userEmail = jwtService.extractUsername(token);

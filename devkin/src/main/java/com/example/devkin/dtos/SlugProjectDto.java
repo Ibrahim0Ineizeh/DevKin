@@ -1,16 +1,16 @@
 package com.example.devkin.dtos;
 
 public class SlugProjectDto {
-    private String slug;
+    private String projectSlug;
     private String description;
     private String language;
 
-    public String getSlug() {
-        return slug;
+    public String getProjectSlug() {
+        return projectSlug;
     }
 
-    public void setSlug(String slug) {
-        this.slug = slug;
+    public void setProjectSlug(String projectSlug) {
+        this.projectSlug = projectSlug;
     }
 
     public String getDescription() {

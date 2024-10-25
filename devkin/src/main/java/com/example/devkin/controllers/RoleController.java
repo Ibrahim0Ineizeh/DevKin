@@ -36,7 +36,7 @@ public class RoleController {
         if (assignedRole != null) {
             return ResponseEntity.ok("Success");
         }
-        return ResponseEntity.badRequest().build(); // Handle as needed
+        return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/update")
@@ -50,20 +50,18 @@ public class RoleController {
         if (updatedRole != null) {
             return ResponseEntity.ok("Success");
         }
-        return ResponseEntity.notFound().build(); // Handle as needed
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/role")
     public ResponseEntity<String> getDeveloperRole(
             @RequestBody RoleDto roleDto) {
 
-        // Fetch the ProjectDeveloperRole entity from the repository
         ProjectDeveloperRole projectDeveloperRole = projectDeveloperRoleRepository
                 .findByProject_ProjectIdAndDeveloper_Id(
                         projectRepository.findBySlug(roleDto.getProjectSlug()).get().getProjectId(),
                         userRepository.findByEmail(roleDto.getUserEmail()).get().getId());
 
-        // If the role exists, return the role, otherwise return a 404
         if (projectDeveloperRole != null) {
             return ResponseEntity.ok(projectDeveloperRole.getRole());
         } else {

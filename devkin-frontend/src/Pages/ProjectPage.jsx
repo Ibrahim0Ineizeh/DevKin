@@ -103,12 +103,30 @@ const ProjectPage = () => {
             stompClient.connect(
                 {}, // No headers needed since the token is in the URL
                 (frame) => {
+
+
                     console.log('Connected to WebSocket:', frame);
                     stompClient.subscribe(`/topic/editor/${slug}`, (message) => {
                         const updatedProject = JSON.parse(message.body);
                         console.log('Received updated project:', updatedProject);
                         if (updatedProject && updatedProject.code) {
-                            setFileContent(updatedProject.code); // Ensure this is called when updates are received
+                            if (updatedProject.file === selectedFile) { 
+                                setFileContent(updatedProject.code); 
+                            } else {
+                                console.log(selectedFile)
+                                console.log('No update: The file is different from the selected file.');
+                            }
+                        }
+                    });
+
+                    stompClient.subscribe(`/topic/status/${slug}`, (message) => {
+                        const executionResult = JSON.parse(message.body);
+                        console.log('Received execution result:', executionResult);
+                     
+                        if (executionResult.status === 'COMPLETED') {
+                            setOutput(executionResult.output)
+                        } else if (executionResult.status === 'ERROR') {
+                            setOutput("Execution Failed" + executionResult.output)
                         }
                     });
                 },
@@ -133,7 +151,7 @@ const ProjectPage = () => {
                 }
             };
         });
-    }, [slug]);   
+    }, [selectedFile,slug]);   
     
     const handleCodeChange = (newValue) => {
         // Update the file content with the new value from the editor
@@ -402,7 +420,7 @@ const handleDeleteSubmit = async () => {
                             <div style={{ height: '70vh'}} className="codeEditor">  
                                 <MonacoEditor
                                 height="100%"
-                                language="javascript"
+                                language="python"
                                 theme={isDarkMode ? 'vs-dark' : 'light'}
                                 value={fileContent}
                                 onChange={handleCodeChange}
@@ -417,7 +435,7 @@ const handleDeleteSubmit = async () => {
                 </div>
                 <div className="column output-console">
                     <h2>Output Console</h2>
-                    <pre>{output}</pre>
+                    <pre className='outputResult'>{output}</pre>
                     <button onClick={handleClearOutput}>Clear Output</button>
                 </div>
                 {showCreatePopUP && (

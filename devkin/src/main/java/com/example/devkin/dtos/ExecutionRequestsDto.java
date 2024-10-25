@@ -1,16 +1,16 @@
 package com.example.devkin.dtos;
 
 public class ExecutionRequestsDto {
-    private String sessionId;
+    private String projectSlug;
     private ExecuteDto executeDto;
 
-    public ExecutionRequestsDto(String sessionId, ExecuteDto executeDto) {
-        this.sessionId = sessionId;
+    public ExecutionRequestsDto(String projectSlug, ExecuteDto executeDto) {
+        this.projectSlug = projectSlug;
         this.executeDto = executeDto;
     }
 
-    public String getSessionId() {
-        return sessionId;
+    public String getProjectSlug() {
+        return projectSlug;
     }
 
     public ExecuteDto getCodeRequest() {

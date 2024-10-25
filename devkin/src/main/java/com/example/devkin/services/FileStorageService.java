@@ -8,18 +8,15 @@ import com.example.devkin.repositories.FileRepository;
 import com.example.devkin.repositories.FolderRepository;
 import com.example.devkin.repositories.ProjectRepository;
 import io.minio.*;
-import io.minio.errors.MinioException;
 import io.minio.messages.Item;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class FileStorageService {
@@ -60,6 +57,7 @@ public class FileStorageService {
             folder.setProject(projectRepository.findById(projectId).orElseThrow(() -> new RuntimeException("Project not found")));
 
             folderRepository.save(folder);
+
         } catch (Exception e) {
             throw new RuntimeException("Failed to create folder", e);
         }
@@ -147,13 +145,11 @@ public class FileStorageService {
         try {
             String filePath = folderPath.endsWith("/") ? folderPath + fileName : folderPath + "/" + fileName;
 
-            // Check for duplicates
             boolean fileExists = fileRepository.existsByFilePath(filePath);
             if (fileExists) {
                 throw new RuntimeException("File already exists at this path: " + filePath);
             }
 
-            // Upload the file to MinIO
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket("devkin")
@@ -237,6 +233,23 @@ public class FileStorageService {
     }
 
     @Transactional
+    public void deleteFile(String filePath) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket("devkin")
+                            .object(filePath)
+                            .build()
+            );
+
+            // Remove file from the database
+            fileRepository.deleteByFilePath(filePath);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete file", e);
+        }
+    }
+
+    @Transactional
     public byte[] getFileContents(String filePath) {
         try {
             // Download the file as an InputStream from Minio
@@ -263,23 +276,6 @@ public class FileStorageService {
             return stat.contentType();
         } catch (Exception e) {
             throw new RuntimeException("Failed to get file content type", e);
-        }
-    }
-
-    @Transactional
-    public void deleteFile(String filePath) {
-        try {
-            minioClient.removeObject(
-                    RemoveObjectArgs.builder()
-                            .bucket("devkin")
-                            .object(filePath)
-                            .build()
-            );
-
-            // Remove file from the database
-            fileRepository.deleteByFilePath(filePath);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to delete file", e);
         }
     }
 

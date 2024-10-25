@@ -26,15 +26,12 @@ public class ProjectController {
             ProjectDto createdProject = projectService.createProject(project);
             return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
         } catch (UsernameNotFoundException e) {
-            // Handle user not found
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         } catch (DataIntegrityViolationException e) {
             // Handle data integrity violation (e.g., duplicate project name)
             return new ResponseEntity<>("Data integrity violation: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            // Log the error for debugging purposes
-            // You can use a logger here
-            e.printStackTrace(); // Consider using a proper logger
+            e.printStackTrace();
             return new ResponseEntity<>("An error occurred while creating the project", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -65,7 +62,7 @@ public class ProjectController {
     @PutMapping("/update")
     public ResponseEntity<ProjectDto> updateProject(
             @RequestBody SlugProjectDto slugProjectDto) {
-        ProjectDto updatedProject = projectService.updateProject(projectService.getProjectBySlug(slugProjectDto.getSlug()), slugProjectDto);
+        ProjectDto updatedProject = projectService.updateProject(projectService.getProjectBySlug(slugProjectDto.getProjectSlug()), slugProjectDto);
         if (updatedProject != null) {
             return new ResponseEntity<>(updatedProject, HttpStatus.OK);
         } else {
@@ -96,7 +93,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Boolean> deleteProject(@RequestBody String projectSlug) {
+    public ResponseEntity<Boolean> deleteProject(@RequestParam String projectSlug) {
         try {
             return new ResponseEntity<>( projectService.deleteProject(projectService.getProjectBySlug(projectSlug)),HttpStatus.NO_CONTENT);
         } catch (Exception e) {

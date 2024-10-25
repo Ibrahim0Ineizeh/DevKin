@@ -9,6 +9,8 @@ const ProjectSettings = () => {
     const navigate = useNavigate();
     const [project, setProject] = useState(null);
     const [activeTab, setActiveTab] = useState('description');
+    const [description, setDescription] = useState('');
+    const [language, setLanguage] = useState('Python'); // Default to 'Python'
 
     useEffect(() => {
         fetch(`http://localhost:8080/dashboard/project/get?projectSlug=${slug}`, {
@@ -24,6 +26,8 @@ const ProjectSettings = () => {
             })
             .then((data) => {
                 setProject(data);
+                setDescription(data.description);
+                setLanguage(data.language || 'Python'); // Set language to default if null
                 localStorage.setItem('projectInfo', JSON.stringify(data));
             })
             .catch((err) => console.error(err.message));
@@ -35,7 +39,7 @@ const ProjectSettings = () => {
 
     const handleBackClick = () => {
         if (project) {
-            navigate(`/projects/${project.slug}`); // Navigate to the project page
+            navigate(`/projects/${project.slug}`);
         }
     };
 
@@ -54,11 +58,31 @@ const ProjectSettings = () => {
             })
                 .then((response) => {
                     if (!response.ok) throw new Error('Failed to delete the project');
-                    // Optionally navigate back to the projects list or show a success message
-                    navigate('/projects'); // Navigate to projects list after deletion
+                    navigate('/dashboard');
                 })
                 .catch((err) => console.error(err.message));
         }
+    };
+
+    const handleUpdateProject = (e) => {
+        e.preventDefault();
+        fetch(`http://localhost:8080/dashboard/project/update`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+            },
+            body: JSON.stringify({ projectSlug: slug, description:description, language:language }),
+        })
+            .then((response) => {
+                if (!response.ok) throw new Error('Failed to update project details');
+                return response.json();
+            })
+            .then((data) => {
+                setProject(data); // Update project details in the state
+                alert('Project updated successfully!');
+            })
+            .catch((err) => console.error(err.message));
     };
 
     return (
@@ -78,19 +102,41 @@ const ProjectSettings = () => {
             </div>
             <div className="tab-content">
                 {activeTab === 'description' && (
-                    <div>
-                        <h2>Update Project </h2>
-                        {/* Implement the form for updating description and language here */}
+                    <div className='updateContainer'>
+                        <h2>Update Project</h2>
+                        <form onSubmit={handleUpdateProject}>
+                        <label className='project-language-label'>
+                                Language:
+                                <select 
+                                    className='project-language-select'
+                                    value={language}
+                                    onChange={(e) => setLanguage(e.target.value)}
+                                >
+                                    <option value="Python">Python</option>
+                                    <option value="JavaScript">JavaScript</option>
+                                </select>
+                            </label>
+                            <label className='project-description-label'>
+                                Description:
+                                <textarea 
+                                    className='project-description-textarea'
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                    rows="4"
+                                    placeholder="Enter project description"
+                                />
+                            </label>
+                            <button className='project-update-button' type="submit">Save Changes</button>
+                        </form>
                     </div>
                 )}
                 {activeTab === 'users' && (
                     <div>
-                        <h2>Add User</h2>
+                        <h2>Add Developers</h2>
                         {/* This tab will be implemented later */}
                     </div>
                 )}
             </div>
-           
         </div>
     );
 };

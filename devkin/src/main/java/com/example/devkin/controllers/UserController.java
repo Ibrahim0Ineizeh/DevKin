@@ -35,7 +35,6 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof UserDetails) {
-            // This is a regular user authenticated with email/password
             User user = (User) authentication.getPrincipal();
             User currentUser = userRepository.findByEmail(user.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));

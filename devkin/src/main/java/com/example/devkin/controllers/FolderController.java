@@ -28,12 +28,11 @@ public class FolderController {
             Integer ownerId = project.getOwner().getId();
             Integer projectId = project.getProjectId();
 
-            // Set the folder path
             String folderPath = "projects/" + ownerId + "/" + project.getName() + "/" + folderDto.getFolderName() + "/";
             fileStorageService.createFolder(folderPath, folderDto.getFolderName(), projectId);
             return new ResponseEntity<>("Folder created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace(); // Use proper logging in production
+            e.printStackTrace();
             return new ResponseEntity<>("Failed to create folder: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

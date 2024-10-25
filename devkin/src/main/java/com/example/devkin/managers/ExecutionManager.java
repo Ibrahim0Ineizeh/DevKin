@@ -1,8 +1,9 @@
-package com.example.devkin.services;
+package com.example.devkin.managers;
 
-import com.example.devkin.dtos.ExecuteDto;
 import com.example.devkin.dtos.ExecutionRequestsDto;
 import com.example.devkin.dtos.ExecutionResultDto;
+import com.example.devkin.services.ExecutionService;
+import com.example.devkin.services.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,12 @@ public class ExecutionManager {
     // A method to add requests to the queue
     public void submitExecutionRequest(ExecutionRequestsDto request) {
         executionQueue.add(request);
-        processNextRequest(); // Process the next request if available
+        processNextRequest();
     }
 
     // A method to process requests one by one
     private void processNextRequest() {
         if (isExecuting.compareAndSet(false, true)) {
-            // Process the request at the front of the queue
             ExecutionRequestsDto request = executionQueue.poll();
 
             if (request != null) {
@@ -45,11 +45,11 @@ public class ExecutionManager {
                     try {
                         byte[] fileData = fileStorageService.getFileContents(fileStorageService.calcFilePath(request.getCodeRequest().getFileDto()));
                         String code = new String(fileData, StandardCharsets.UTF_8);
-                        String result = executionService.executeCode(request.getCodeRequest().getLanguage(), code);
-                        messagingTemplate.convertAndSend("/topic/status/" + request.getSessionId(),
+                        String result = executionService.executeCode(code);
+                        messagingTemplate.convertAndSend("/topic/status/" + request.getProjectSlug(),
                                 new ExecutionResultDto("COMPLETED", result));
                     } catch (Exception e) {
-                        messagingTemplate.convertAndSend("/topic/status/" + request.getSessionId(),
+                        messagingTemplate.convertAndSend("/topic/status/" + request.getProjectSlug(),
                                 new ExecutionResultDto("ERROR", e.getMessage()));
                     } finally {
                         isExecuting.set(false);

@@ -101,21 +101,11 @@ public class ProjectService {
         if (projectOptional.isPresent()) {
             Project existingProject = projectOptional.get();
 
-            String oldFolderPath = existingProject.getUrl();
-            String newFolderPath = String.format("projects/%d/%s/", existingProject.getOwner().getId(), existingProject.getName());
-
             existingProject.setDescription(updatedProjectData.getDescription());
             existingProject.setLanguage(updatedProjectData.getLanguage());
             existingProject.setLastModified(LocalDateTime.now());
 
             projectRepository.save(existingProject);
-
-            try {
-                fileStorageService.updateFolder(oldFolderPath, newFolderPath);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
 
             return  projectMapper.toProjectDto(existingProject);
         }

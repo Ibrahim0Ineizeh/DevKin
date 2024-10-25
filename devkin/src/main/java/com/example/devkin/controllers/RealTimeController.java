@@ -1,4 +1,4 @@
-package com.example.devkin.configs;
+package com.example.devkin.controllers;
 
 import com.example.devkin.dtos.CodeDto;
 import org.slf4j.Logger;
@@ -18,10 +18,10 @@ public class RealTimeController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    @MessageMapping("/edit/{slug}")
-    @SendTo("/topic/editor/{slug}")
-    public void sendCodeUpdate(CodeDto codeUpdate, @DestinationVariable String slug) {
+    @MessageMapping("/edit/{projectSlug}")
+    @SendTo("/topic/editor/{projectSlug}")
+    public void sendCodeUpdate(CodeDto codeUpdate, @DestinationVariable String projectSlug) {
         logger.warn(codeUpdate.getFile());
-        messagingTemplate.convertAndSend("/topic/editor/" + slug, codeUpdate);
+        messagingTemplate.convertAndSend("/topic/editor/" + projectSlug, codeUpdate);
     }
 }

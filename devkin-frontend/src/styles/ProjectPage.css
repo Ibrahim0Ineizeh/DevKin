@@ -185,6 +185,107 @@
   margin-bottom: 0px; 
 }
 
+.updateContainer {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
+}
+
+.outputResult {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  color: #333;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.project-description-label,
+.project-language-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #4a4a4a;
+  text-align: left;
+  width: 100%;
+}
+
+.project-description-textarea,
+.project-language-select {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #cfcfcf;
+  background-color: #fafafa;
+  color: #2a2a2a;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.project-description-textarea:focus,
+.project-language-select:focus {
+  border-color: #81c7ff;
+  box-shadow: 0px 2px 8px rgba(0, 119, 204, 0.2);
+}
+
+/* Button styling */
+.project-update-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #81c7ff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 119, 204, 0.3);
+}
+
+.project-update-button:hover {
+  background-color: #005a99;
+  transform: scale(1.03);
+}
+
+/* Light and dark mode colors */
+.project-page-container.light-mode {
+  background-color: #ffffff;
+  color: #2a2a2a;
+}
+
+.project-page-container.dark-mode {
+  background-color: #1c1c1c;
+  color: #f5f5f5;
+}
+
+.project-page-container.dark-mode .project-description-label,
+.project-page-container.dark-mode .project-language-label {
+  color: #f0f0f0;
+}
+
+.project-page-container.dark-mode .project-description-textarea,
+.project-page-container.dark-mode .project-language-select {
+  background-color: #333;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.project-page-container.dark-mode .project-update-button {
+  background-color: #2d87c2;
+}
+
+.project-page-container.dark-mode .project-update-button:hover {
+  background-color: #236ba0;
+}
+
   /* Responsive Layout for Small Screens */
   @media (max-width: 768px) {
     .columns-container {
