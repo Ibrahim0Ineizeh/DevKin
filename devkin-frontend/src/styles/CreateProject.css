@@ -1,0 +1,112 @@
+/* CreateProject.css */
+
+/* General page layout and form styling */
+.create-project-container {
+    padding: 40px;
+    max-width: 800px;
+    margin: 50px auto;
+    background-color: #f5d5a8; /* Light mode background */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .dark-mode {
+    background-color: #474747;
+  }
+  
+  .create-project-container h2 {
+    margin-bottom: 20px;
+    color: #4793AF; /* Light mode text */
+    text-align: center;
+  }
+
+  .dark-mode h2{
+    color: #f4f4f4;
+  }
+  
+  .create-project-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  /* Form group styling */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    color: #4793AF;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .dark-mode .form-group label {
+    color: #f7f7f7;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1.1em;
+    width: 100%;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .form-group select {
+    width: 103%;
+  }
+  
+  /* Button styling */
+  .create-project-btn {
+    background-color: #4793AF;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    width: fit-content;
+    align-self: center;
+  }
+  
+  .create-project-btn:hover {
+    background-color: #3b7695;
+  }
+  
+  /* Dark Mode */
+  .dark-mode .create-project-container {
+    background-color: #292929 !important; /* Dark mode background */
+    color: #f4f4f4 !important; /* Dark mode text */
+  }
+  
+  .dark-mode .create-project-container h2 {
+    color: #f4f4f4 !important; /* Dark mode heading */
+  }
+  
+  .dark-mode .form-group input,
+  .dark-mode .form-group select,
+  .dark-mode .form-group textarea {
+    background-color: #333 !important; /* Dark mode input background */
+    color: #f4f4f4 !important; /* Dark mode input text */
+    border: 1px solid #555;
+  }
+  
+  .dark-mode .create-project-btn {
+    background-color: #81c7ff !important;
+    color: #000 !important;
+  }
+  
+  .dark-mode .create-project-btn:hover {
+    background-color: #6bb0e0 !important;
+  }
+  

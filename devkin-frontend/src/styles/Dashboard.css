@@ -1,0 +1,130 @@
+/* Dashboard container layout */
+body {
+    margin: 0;
+    font-family: "Kanit", sans-serif;
+    background-color: #f4f4f4; /* Light mode background */
+    color: #333; /* Light mode text */
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+.dashboard-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    padding-top: 40px;
+    padding-bottom: 100px;
+  }
+  
+  .project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .project-card {
+    background-color: #ffc370cc;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .project-card h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .project-slug {
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 10px;
+  }
+  
+  .project-card p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .project-card span {
+    color: #4793AF;
+    text-decoration: none;
+  }
+
+  .dark-mode .project-card span {
+    color: #81c7ff;
+    text-decoration: none;
+  }
+
+  .project-card a {
+    color: #4793AF;
+    text-decoration: none;
+  }
+
+  .dark-mode .project-card a {
+    color: #81c7ff;
+    text-decoration: none;
+  }
+  
+  .project-card a:hover {
+    text-decoration: none;
+  }
+  
+  /* Right side: Create Project Button container */
+  .right-column {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: 500px;
+    padding: 30px 10px;
+    border-radius: 10px;
+  }
+  
+  .create-project-btn {
+    background-color: #4793AF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+    margin: 0px auto;
+  }
+  
+  .create-project-btn:hover {
+    background-color: #3b7695;
+  }
+  
+  /* Dark Mode */
+  .dark-mode .project-card {
+    background-color: #292929;
+    color: #f4f4f4;
+  }
+  
+  .dark-mode .create-project-btn {
+    background-color: #81c7ff;
+    color: #000;
+  }
+  
+  .dark-mode .create-project-btn:hover {
+    background-color: #6bb0e0;
+  }
+  
+  
+  .dark-mode .right-column{
+    background-color: #292929; 
+  }
+
+   .right-column{
+    background-color: #f5d5a8; 
+  }

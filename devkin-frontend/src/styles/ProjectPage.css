@@ -1,0 +1,306 @@
+/* Project Page Container */
+.project-page-container {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    height: 90vh; /* Full height of the viewport */
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  /* Project Header Section with Reduced Height */
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 5px; /* Reduced padding for smaller height */
+    height: 50px; /* Set a fixed, smaller height for the header */
+    color: white;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Settings Button Styling */
+  .settings-btn {
+    background-color: #81c7ff;
+    color: black;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 0px;
+  }
+  
+  .settings-btn:hover {
+    background-color: #6bb0e0;
+  }
+  
+  /* Columns Container */
+  .columns-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* Three columns by default */
+    gap: 5px; /* Reduced gap between columns */
+    height: calc(100vh - 60px); /* Remaining height minus header and margin */
+    overflow: hidden; /* Prevents columns from exceeding the view height */
+  }
+
+  .columns-container h2 {
+    margin: 0px 0px;
+  }
+
+  .columns-container p {
+    margin: 0; /* Reset margins */
+    width: 100%; /* Full width */
+    height: 500px; /* Full height */
+    display: flex; /* Enable flexbox on the paragraph */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text inside the paragraph */
+  }
+  
+  .column {
+    padding: 15px;
+    background-color: #ffc370cc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    overflow-y: auto; /* Add scroll if content exceeds column height */
+  }
+  
+  /* Specific Column Heights */
+  .file-explorer, .code-editor, .output-console {
+    height: 100%; /* Full height for all columns */
+  }
+  
+  /* Code Area Styling */
+  .code-area {
+    width: 100%;
+    height: calc(100% - 50px); /* Full height minus padding for buttons */
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  
+  /* Buttons inside columns */
+  button {
+    background-color: #4793AF;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  
+  button:hover {
+    background-color: #3b7695;
+  }
+  
+  /* Dark Mode Adjustments */
+  .dark-mode .column {
+    background-color: #292929;
+    color: #f4f4f4;
+  }
+  
+  .dark-mode .settings-btn {
+    background-color: #6bb0e0;
+    color: black;
+  }
+  
+  .dark-mode .settings-btn:hover {
+    background-color: #81c7ff;
+  }
+  
+  .codeEditor{
+    margin-bottom: 10px;
+  }
+
+  .code-area::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .code-area::-webkit-scrollbar-thumb {
+    background-color: #81c7ff;
+    border-radius: 10px;
+  }
+  
+  .code-area::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+  }
+  
+  /* Dark mode scrollbars */
+  .dark-mode .code-area::-webkit-scrollbar-thumb {
+    background-color: #6bb0e0;
+  }
+
+  .backbutton {
+    margin: 5px;
+    padding: 10px 50px;
+    width: 10%;
+  }
+
+  .tabs {
+    width: 100%;
+    margin: 10px;
+  }
+
+  .projectSettings{
+    margin: 5px 10px;
+  }
+
+  .tabs button {
+    width: 49%;
+    padding: 10px 50px;
+  }
+
+  .tab-content{
+    margin: 10px;
+  }
+  
+  .delete-button {
+    width: 10%;
+    margin: 5px;
+    background-color: red; /* Red background for delete button */
+    color: #f0f0f0; /* White text for contrast */
+    padding: 10px 15px; /* Padding for better touch target */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+    margin-top: 5px; /* Space above the button */
+    
+}
+
+.delete-button:hover {
+    background-color: darkred; /* Darker shade on hover */
+}
+
+.settingControl {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center; 
+  margin-bottom: 0px; 
+}
+
+.updateContainer {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  max-width: 800px;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
+}
+
+.outputResult {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  color: #333;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.project-description-label,
+.project-language-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #4a4a4a;
+  text-align: left;
+  width: 100%;
+}
+
+.project-description-textarea,
+.project-language-select {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #cfcfcf;
+  background-color: #fafafa;
+  color: #2a2a2a;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  display: block;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.project-description-textarea:focus,
+.project-language-select:focus {
+  border-color: #81c7ff;
+  box-shadow: 0px 2px 8px rgba(0, 119, 204, 0.2);
+}
+
+/* Button styling */
+.project-update-button {
+  padding: 12px 24px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #81c7ff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 119, 204, 0.3);
+}
+
+.project-update-button:hover {
+  background-color: #005a99;
+  transform: scale(1.03);
+}
+
+/* Light and dark mode colors */
+.project-page-container.light-mode {
+  background-color: #ffffff;
+  color: #2a2a2a;
+}
+
+.project-page-container.dark-mode {
+  background-color: #1c1c1c;
+  color: #f5f5f5;
+}
+
+.project-page-container.dark-mode .project-description-label,
+.project-page-container.dark-mode .project-language-label {
+  color: #f0f0f0;
+}
+
+.project-page-container.dark-mode .project-description-textarea,
+.project-page-container.dark-mode .project-language-select {
+  background-color: #333;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.project-page-container.dark-mode .project-update-button {
+  background-color: #2d87c2;
+}
+
+.project-page-container.dark-mode .project-update-button:hover {
+  background-color: #236ba0;
+}
+
+  /* Responsive Layout for Small Screens */
+  @media (max-width: 768px) {
+    .columns-container {
+      grid-template-columns: 1fr; /* Stack columns vertically */
+      gap: 20px; /* Increase gap between stacked columns */
+    }
+  
+    /* Ensure full height for stacked columns */
+    .column {
+      height: auto;
+      min-height: 300px;
+    }
+  
+    .code-area {
+      height: 200px; /* Adjust code area height for smaller screens */
+    }
+  }
+  

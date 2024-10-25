@@ -133,6 +133,10 @@ input:checked + .slider:before {
   background-color: #3b7695;
 }
 
+.logoimage {
+  width: 13em;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .container p {
@@ -147,6 +151,10 @@ input:checked + .slider:before {
   .cta-button {
     font-size: 1em; /* Adjust button size for smaller screens */
     padding: 8px 16px; /* Adjust padding */
+  }
+
+  .logoimage {
+    width: 15em;
   }
 }
 

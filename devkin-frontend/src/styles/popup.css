@@ -1,0 +1,81 @@
+/* popup-theme.css */
+
+/* Full-screen overlay that covers everything */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* High z-index to appear above everything */
+    backdrop-filter: blur(5px); /* Blurs the background */
+  }
+  
+  /* Popup box */
+  .popup {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+    transform: scale(0.8); /* Initially small */
+    opacity: 0; /* Initially invisible */
+  }
+  
+  /* Dark mode for popup */
+  .popup.dark-mode {
+    background-color: #333;
+    color: #fff;
+  }
+  
+  /* Light mode for popup */
+  .popup.light-mode {
+    background-color: #f0f0f0;
+    color: #000;
+  }
+  
+  /* Smooth animation to scale and appear */
+  .popup.show {
+    transform: scale(1); /* Final size */
+    opacity: 1; /* Fully visible */
+  }
+  
+  /* Button inside the popup */
+  .popup button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px 20px;
+  }
+  
+  .popup button:hover {
+    background-color: #0056b3;
+  }
+  
+  .popup label {
+    display: block;
+    margin: 10px 0;
+}
+
+.popup input, .popup select {
+    width: 90%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.popup button {
+    margin-top: 15px;
+}
