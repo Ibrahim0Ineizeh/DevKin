@@ -11,6 +11,7 @@ import io.minio.*;
 import io.minio.messages.Item;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;

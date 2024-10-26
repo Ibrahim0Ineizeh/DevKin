@@ -2,6 +2,7 @@ package com.example.devkin.controllers;
 
 import com.example.devkin.dtos.*;
 import com.example.devkin.entities.Project;
+import com.example.devkin.entities.User;
 import com.example.devkin.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;

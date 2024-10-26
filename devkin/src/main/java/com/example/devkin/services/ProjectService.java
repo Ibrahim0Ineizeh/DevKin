@@ -1,11 +1,9 @@
 package com.example.devkin.services;
 
 import com.example.devkin.dtos.*;
-import com.example.devkin.entities.File;
-import com.example.devkin.entities.Folder;
-import com.example.devkin.entities.Project;
-import com.example.devkin.entities.User;
+import com.example.devkin.entities.*;
 import com.example.devkin.mappings.ProjectMapper;
+import com.example.devkin.repositories.ProjectDeveloperRoleRepository;
 import com.example.devkin.repositories.ProjectRepository;
 import com.example.devkin.repositories.UserRepository;
 import com.example.devkin.utils.SlugUtil;
@@ -19,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import com.example.devkin.dtos.UserInfoDto;
 
 @Service
 public class ProjectService {
@@ -37,6 +36,9 @@ public class ProjectService {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private ProjectDeveloperRoleRepository projectDeveloperRoleRepository;
 
     @Autowired
     private SlugUtil slugUtil;
@@ -61,6 +63,15 @@ public class ProjectService {
         temp.setCreatedAt(LocalDateTime.now());
         temp.setLastModified(LocalDateTime.now());
         Project savedProject = projectRepository.save(temp);
+
+        ProjectDeveloperId projectDeveloperId = new ProjectDeveloperId(temp.getProjectId(), currentUser.getId());
+        ProjectDeveloperRole projectDeveloperRole = new ProjectDeveloperRole();
+        projectDeveloperRole.setId(projectDeveloperId);
+        projectDeveloperRole.setDeveloper(currentUser);
+        projectDeveloperRole.setProject(temp);
+        projectDeveloperRole.setRole("owner");
+
+        projectDeveloperRoleRepository.save(projectDeveloperRole);
 
         try {
             fileStorageService.createFolder(projectUrl, temp.getName(), temp.getProjectId());
@@ -169,6 +180,7 @@ public class ProjectService {
         return fileStructureDtos;
     }
 
+    @Transactional(readOnly = true)
     public Integer getProjectBySlug(String slug) {
         Optional<Project> project = projectRepository.findBySlug(slug);
         return project != null ? project.get().getProjectId(): null;

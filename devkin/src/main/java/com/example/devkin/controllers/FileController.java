@@ -1,5 +1,6 @@
 package com.example.devkin.controllers;
 
+import com.example.devkin.dtos.ExecutionResultDto;
 import com.example.devkin.dtos.FileDto;
 import com.example.devkin.entities.Project;
 import com.example.devkin.repositories.ProjectRepository;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,9 @@ public class FileController {
 
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(
@@ -43,6 +48,10 @@ public class FileController {
                     file.getSize(),
                     projectId
             );
+
+            messagingTemplate.convertAndSend("/topic/change/" + fileDto.getProjectSlug(),
+                    new ExecutionResultDto("COMPLETED", filePath));
+
             return new ResponseEntity<>("File uploaded successfully", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,6 +71,10 @@ public class FileController {
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/" + fileDto.getFileName();
             fileStorageService.updateFileContents(filePath, file.getBytes(), file.getContentType());
+
+            messagingTemplate.convertAndSend("/topic/change/" + fileDto.getProjectSlug(),
+                    new ExecutionResultDto("COMPLETED", filePath));
+
             return new ResponseEntity<>("File contents updated successfully", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,6 +92,10 @@ public class FileController {
                     (fileDto.getFilePath().isEmpty() ? "" : "/" + fileDto.getFilePath()) +
                     "/" + fileDto.getFileName();
             fileStorageService.updateFileName(filePath, fileDto.getNewFileName());
+
+            messagingTemplate.convertAndSend("/topic/change/" + fileDto.getProjectSlug(),
+                    new ExecutionResultDto("COMPLETED", filePath));
+
             return new ResponseEntity<>("File renamed successfully", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,8 +120,10 @@ public class FileController {
             headers.setContentType(MediaType.parseMediaType(contentType));
             headers.setContentLength(fileData.length);
 
-            return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
+            messagingTemplate.convertAndSend("/topic/change/" + fileDto.getProjectSlug(),
+                    new ExecutionResultDto("COMPLETED", filePath));
 
+            return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -119,6 +138,10 @@ public class FileController {
 
             String filePath = "projects/" + ownerId + "/" + project.getName() + "/" + fileDto.getFileName();
             fileStorageService.deleteFile(filePath);
+
+            messagingTemplate.convertAndSend("/topic/change/" + fileDto.getProjectSlug(),
+                    new ExecutionResultDto("COMPLETED", filePath));
+
             return new ResponseEntity<>("File deleted successfully", HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             e.printStackTrace(); // Use proper logging in production

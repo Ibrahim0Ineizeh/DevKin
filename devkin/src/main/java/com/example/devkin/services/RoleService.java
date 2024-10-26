@@ -1,5 +1,6 @@
 package com.example.devkin.services;
 
+import com.example.devkin.dtos.UserInfoDto;
 import com.example.devkin.entities.Project;
 import com.example.devkin.entities.ProjectDeveloperRole;
 import com.example.devkin.entities.ProjectDeveloperId;
@@ -7,10 +8,14 @@ import com.example.devkin.entities.User;
 import com.example.devkin.repositories.ProjectRepository;
 import com.example.devkin.repositories.ProjectDeveloperRoleRepository;
 import com.example.devkin.repositories.UserRepository;
-import jakarta.transaction.Transactional;
+import com.example.devkin.responses.RoleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleService {
@@ -49,6 +54,21 @@ public class RoleService {
             return projectDeveloperRoleRepository.save(role.get());
         }
         return null; // Handle as needed
+    }
+
+    @Transactional(readOnly = true)
+    public List<RoleResponse> getUsersInProject(Integer projectId) {
+        List<User> users = projectDeveloperRoleRepository.findAllUsersByProjectIdExceptOwner(projectId);
+
+        return users.stream()
+                .map(user -> {
+                    ProjectDeveloperId id = new ProjectDeveloperId(projectId, user.getId());
+                    Optional<ProjectDeveloperRole> roleOpt = projectDeveloperRoleRepository.findById(id);
+                    String roleName = roleOpt.map(ProjectDeveloperRole::getRole).orElse("No role assigned");
+
+                    return new RoleResponse(user.getName(), user.getEmail(), roleName);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional

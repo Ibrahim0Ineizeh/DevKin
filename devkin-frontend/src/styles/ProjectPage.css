@@ -286,6 +286,99 @@
   background-color: #236ba0;
 }
 
+.developers-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.add-developer-section, .current-developer-section {
+  margin: 20px 0;
+}
+
+.add-developer-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.add-developer-form label {
+  margin-bottom: 10px;
+}
+
+.developers-table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.developers-table th, .developers-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.developers-table th {
+  background-color: #f4f4f4;
+}
+
+.dark-mode .developers-table th {
+  background-color: #333;
+}
+
+.developers-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.developers-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.dark-mode .developers-table tr:hover {
+  background-color: #333;
+}
+
+/* Custom styling for the select element */
+.custom-select {
+  background-color: #f1f1f1; /* Background color */
+  color: black; /* Text color */
+  padding: 10px; /* Padding for the select */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Font size */
+  width: 200px; /* Width of the select */
+  appearance: none; /* Remove default styling */
+  outline: none; /* Remove outline */
+  cursor: pointer; /* Change cursor */
+  position: relative; /* Positioning for the arrow */
+  font-weight: 700;
+}
+
+.dark-mode .custom-select {
+  background-color: #333; /* Background color */
+  color: #fff; /* Text color */
+}
+
+/* Custom arrow styling */
+.custom-select:after {
+  content: '▼'; /* Arrow character */
+  position: absolute;
+  right: 10px; /* Adjust position */
+  top: 50%;
+  transform: translateY(-50%); /* Center the arrow */
+  pointer-events: none; /* Prevent arrow click events */
+}
+
+/* Style for the dropdown options */
+.custom-select:focus {
+  border-color: #007bff; /* Change border color on focus */
+}
+
+.roleCustom:disabled {
+  background-color: gray; /* Disabled background color */
+  color: lightgray; /* Disabled text color */
+  cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+}
+
+
   /* Responsive Layout for Small Screens */
   @media (max-width: 768px) {
     .columns-container {
