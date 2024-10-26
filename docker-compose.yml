@@ -24,12 +24,21 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mysql
+      - minio
     ports:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/devkin_db
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: userpassword
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESS_KEY: ibrahimineizeh
+      MINIO_SECRET_KEY: atyponpassword
+      EXECUTION_FILE_PATH: /app/code_storage
+      DOCKER_HOST: unix:///var/run/docker.sock
+    volumes:
+      - code_storage:/app/code_storage
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - front_network
       - back_network
@@ -53,18 +62,32 @@ services:
       - "9000:9000" 
       - "9001:9001" 
     environment:
-      MINIO_ACCESS_KEY: minioadmin  
-      MINIO_SECRET_KEY: minioadmin  
+      MINIO_ACCESS_KEY: ibrahimineizeh 
+      MINIO_SECRET_KEY: atyponpassword
       MINIO_BUCKET: devkin
     volumes:
       - minio_data:/data 
-    command: server /data
+    command: server /data --console-address ":9001"
+    networks:
+      - minio-network
+
+  minio_setup:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10;
+      mc alias set myminio http://minio:9000 ibrahimineizeh atyponpassword;
+      mc mb myminio/devkin || true;
+      "
     networks:
       - minio-network
 
 volumes:
   mysql_data:
   minio_data:
+  code_storage:
 
 networks:
   front_network:

@@ -372,6 +372,12 @@
   border-color: #007bff; /* Change border color on focus */
 }
 
+.roleCustom:disabled {
+  background-color: gray; /* Disabled background color */
+  color: lightgray; /* Disabled text color */
+  cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+}
+
 
   /* Responsive Layout for Small Screens */
   @media (max-width: 768px) {

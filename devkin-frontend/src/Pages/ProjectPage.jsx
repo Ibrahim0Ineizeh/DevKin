@@ -56,6 +56,7 @@ const ProjectPage = () => {
     const [code, setCode] = useState(''); 
     const [stompClient, setStompClient] = useState(null);
     const stompClientRef = useRef(null);
+    const [userRole, setUserRole] = useState('');
 
     useEffect(() => {
         const fetchProjectData = async () => {
@@ -88,55 +89,69 @@ const ProjectPage = () => {
     
                 const structureData = await structureResponse.json();
                 setProjectStructure(structureData);
+    
+                // Fetch user role
+                const userEmail = localStorage.getItem('email');
+                const roleResponse = await fetch(`http://localhost:8080/dashboard/project/role/userRole?projectSlug=${slug}&userEmail=${userEmail}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+                    },
+                });
+    
+                if (!roleResponse.ok) throw new Error('Failed to fetch user role');
+    
+                const roleData = await roleResponse.json();
+                setUserRole(roleData.role);
+                console.log('User role:', roleData.role);
+    
             } catch (err) {
-                console.error(err.message);
+                console.error('Error fetching project data:', err.message);
             }
         };
     
         const connectWebSocket = () => {
-            const token = localStorage.getItem('authToken'); // Ensure this token is correctly set
-        
-            // Append the token as a query parameter to the WebSocket URL
-            const socket = new SockJS(`http://localhost:8080/ws?token=${token}`); // Ensure this URL is correct
+            const token = localStorage.getItem('authToken');
+            const socket = new SockJS(`http://localhost:8080/ws?token=${token}`);
             const stompClient = Stomp.over(socket);
-        
+    
             stompClient.connect(
-                {}, // No headers needed since the token is in the URL
+                {},
                 (frame) => {
-
-
                     console.log('Connected to WebSocket:', frame);
+                    
                     stompClient.subscribe(`/topic/editor/${slug}`, (message) => {
                         const updatedProject = JSON.parse(message.body);
                         console.log('Received updated project:', updatedProject);
+                        
                         if (updatedProject && updatedProject.code) {
-                            if (updatedProject.file === selectedFile) { 
-                                setFileContent(updatedProject.code); 
+                            if (updatedProject.file === selectedFile) {
+                                setFileContent(updatedProject.code);
                             } else {
-                                console.log(selectedFile)
                                 console.log('No update: The file is different from the selected file.');
                             }
                         }
                     });
-
+    
                     stompClient.subscribe(`/topic/status/${slug}`, (message) => {
                         const executionResult = JSON.parse(message.body);
                         console.log('Received execution result:', executionResult);
-                     
+    
                         if (executionResult.status === 'COMPLETED') {
-                            setOutput(executionResult.output)
+                            setOutput(executionResult.output);
                         } else if (executionResult.status === 'ERROR') {
-                            setOutput("Execution Failed" + executionResult.output)
+                            setOutput(`Execution Failed: ${executionResult.output}`);
                         }
                     });
-
+    
                     stompClient.subscribe(`/topic/change/${slug}`, (message) => {
-                        const executionResult = JSON.parse(message.body);
-                     
-                        if (executionResult.status === 'COMPLETED') {
+                        const changeResult = JSON.parse(message.body);
+    
+                        if (changeResult.status === 'COMPLETED') {
                             fetchProjectStructure();
-                        } else if (executionResult.status === 'ERROR') {
-                            console.log("file operation failed");
+                        } else if (changeResult.status === 'ERROR') {
+                            console.log("File operation failed");
                         }
                     });
                 },
@@ -144,24 +159,25 @@ const ProjectPage = () => {
                     console.error('WebSocket error:', error);
                 }
             );
-        
+    
             stompClientRef.current = stompClient; // Set the ref to the stompClient
         };
     
         fetchProjectData().then(() => {
             const stompClient = connectWebSocket();
-
+    
             // Cleanup function
             return () => {
                 localStorage.removeItem('projectInfo');
-                if (stompClient) {
-                    stompClient.disconnect(() => {
+                if (stompClientRef.current) {
+                    stompClientRef.current.disconnect(() => {
                         console.log('WebSocket disconnected');
                     });
                 }
             };
         });
-    }, [selectedFile,slug]);   
+    }, [selectedFile, slug]);
+    
     
     const handleCodeChange = (newValue) => {
         // Update the file content with the new value from the editor
@@ -196,6 +212,10 @@ const ProjectPage = () => {
 
     const handleDeleteFile = () => {
         setShowDeletePopup(true);
+    };
+
+    const isButtonDisabled = (requiredRoles) => {
+        return !requiredRoles.includes(userRole);
     };
 
     const handleRenameSubmit = async () => {
@@ -408,14 +428,14 @@ const handleDeleteSubmit = async () => {
         <div className={`project-page-container ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
             <div className="project-header">
                 <h1>{project ? project.name : 'Loading project...'}</h1>
-                <button className="settings-btn" onClick={handleSettings}>Settings</button>
+                <button className="settings-btn roleCustom" onClick={handleSettings} disabled={isButtonDisabled(['owner'])}>Settings</button>
             </div>
             <div className="columns-container">
                 <div className="column file-explorer">
                     <h2>File Explorer</h2>
-                    <button onClick={handleFileCreate}>New File</button>
-                    <button onClick={handleRenameFile}>Rename</button>
-                    <button onClick={handleDeleteFile}>Delete</button>
+                    <button className='roleCustom' onClick={handleFileCreate} disabled={isButtonDisabled(['editor', 'owner'])}>New File</button>
+                    <button className='roleCustom' onClick={handleRenameFile} disabled={isButtonDisabled(['editor', 'owner'])}>Rename</button>
+                    <button className='roleCustom' onClick={handleDeleteFile} disabled={isButtonDisabled(['editor', 'owner'])}>Delete</button>
                     {projectStructure.length > 0 ? (
                         <FileExplorer files={projectStructure} onFileSelect={handleFileSelect} />
                     ) : (
@@ -434,10 +454,13 @@ const handleDeleteSubmit = async () => {
                                 theme={isDarkMode ? 'vs-dark' : 'light'}
                                 value={fileContent}
                                 onChange={handleCodeChange}
+                                options={{
+                                    readOnly: isButtonDisabled(['editor', 'owner']), 
+                                }}
                             /></div>
                           
-                            <button onClick={handleSaveCode}>Save</button>
-                            <button onClick={handleExecuteCode}>Execute</button>
+                            <button className='roleCustom' onClick={handleSaveCode} disabled={isButtonDisabled(['editor', 'owner'])}>Save</button>
+                            <button className='roleCustom' onClick={handleExecuteCode} disabled={isButtonDisabled(['editor', 'owner', 'viewer'])}>Execute</button>
                         </div>
                     ) : (
                         <p>Select a file to edit...</p>

@@ -64,7 +64,9 @@ public class ProjectService {
         temp.setLastModified(LocalDateTime.now());
         Project savedProject = projectRepository.save(temp);
 
+        ProjectDeveloperId projectDeveloperId = new ProjectDeveloperId(temp.getProjectId(), currentUser.getId());
         ProjectDeveloperRole projectDeveloperRole = new ProjectDeveloperRole();
+        projectDeveloperRole.setId(projectDeveloperId);
         projectDeveloperRole.setDeveloper(currentUser);
         projectDeveloperRole.setProject(temp);
         projectDeveloperRole.setRole("owner");

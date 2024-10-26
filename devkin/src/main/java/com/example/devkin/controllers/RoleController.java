@@ -65,16 +65,26 @@ public class RoleController {
     }
 
     @GetMapping("/userRole")
-    public ResponseEntity<String> getDeveloperRole(
-            @RequestBody RoleDto roleDto) {
+    public ResponseEntity<?> getDeveloperRole(
+            @RequestParam String projectSlug,
+            @RequestParam String userEmail) {
+
+        Integer projectId = projectRepository.findBySlug(projectSlug).get().getProjectId();
+        Integer userId = userRepository.findByEmail(userEmail).get().getId();
+
+        if (projectId == null || userId == null) {
+            return ResponseEntity.badRequest().body("Invalid project slug or user email.");
+        }
 
         ProjectDeveloperRole projectDeveloperRole = projectDeveloperRoleRepository
-                .findByProject_ProjectIdAndDeveloper_Id(
-                        projectRepository.findBySlug(roleDto.getProjectSlug()).get().getProjectId(),
-                        userRepository.findByEmail(roleDto.getUserEmail()).get().getId());
+                .findByProject_ProjectIdAndDeveloper_Id(projectId, userId);
 
+        RoleResponse roleResponse = new RoleResponse();
+        roleResponse.setName("");
+        roleResponse.setEmail(userEmail);
+        roleResponse.setRole(projectDeveloperRole.getRole());
         if (projectDeveloperRole != null) {
-            return ResponseEntity.ok(projectDeveloperRole.getRole());
+            return ResponseEntity.ok(roleResponse);
         } else {
             return ResponseEntity.notFound().build();
         }
