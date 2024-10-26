@@ -63,3 +63,19 @@
     background-color: #0056b3;
   }
   
+  .popup label {
+    display: block;
+    margin: 10px 0;
+}
+
+.popup input, .popup select {
+    width: 90%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.popup button {
+    margin-top: 15px;
+}

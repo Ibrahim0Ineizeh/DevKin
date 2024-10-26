@@ -1,6 +1,8 @@
 package com.example.devkin.entities;
 
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,7 +12,7 @@ public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private Long folderId;
+    private Integer folderId;
 
     @Column(nullable = false)
     private String folderName;
@@ -37,11 +39,11 @@ public class Folder {
 
     // Getters and Setters
 
-    public Long getFolderId() {
+    public Integer getFolderId() {
         return folderId;
     }
 
-    public void setFolderId(Long folderId) {
+    public void setFolderId(Integer folderId) {
         this.folderId = folderId;
     }
 

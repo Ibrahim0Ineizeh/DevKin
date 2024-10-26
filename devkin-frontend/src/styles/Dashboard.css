@@ -15,28 +15,66 @@ body {
     padding-bottom: 100px;
   }
   
-  /* Left side: Project cards section */
   .project-list {
-    margin: 0px 5px;
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start; /* Align items to the left */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+    flex: 1;
+    margin-right: 20px;
   }
   
-  /* Project card styling */
   .project-card {
     background-color: #ffc370cc;
-    padding: 15px;
-    width: 250px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
   
   .project-card h3 {
-    margin: 0 0 10px;
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .project-slug {
+    font-size: 0.8rem;
+    color: #999;
+    margin-bottom: 10px;
+  }
+  
+  .project-card p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .project-card span {
+    color: #4793AF;
+    text-decoration: none;
+  }
+
+  .dark-mode .project-card span {
+    color: #81c7ff;
+    text-decoration: none;
+  }
+
+  .project-card a {
+    color: #4793AF;
+    text-decoration: none;
+  }
+
+  .dark-mode .project-card a {
+    color: #81c7ff;
+    text-decoration: none;
+  }
+  
+  .project-card a:hover {
+    text-decoration: none;
   }
   
   /* Right side: Create Project Button container */
@@ -48,14 +86,6 @@ body {
     height: 500px;
     padding: 30px 10px;
     border-radius: 10px;
-  }
-
-  .dark-mode .right-column{
-    background-color: #292929; 
-  }
-
-   .right-column{
-    background-color: #f5d5a8; 
   }
   
   .create-project-btn {
@@ -90,3 +120,11 @@ body {
     background-color: #6bb0e0;
   }
   
+  
+  .dark-mode .right-column{
+    background-color: #292929; 
+  }
+
+   .right-column{
+    background-color: #f5d5a8; 
+  }

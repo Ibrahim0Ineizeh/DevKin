@@ -1,15 +1,19 @@
-package com.example.devkin.dtos;
+package com.example.devkin.responses;
 
-public class UserInfoDto {
+public class RoleResponse {
     private String name;
     private String email;
+    private String role;
 
-    public UserInfoDto() {}
+    public RoleResponse() {
+    }
 
-    public UserInfoDto(String name, String email) {
+    public RoleResponse(String name, String email, String role) {
         this.name = name;
         this.email = email;
+        this.role = role;
     }
+
 
     public String getName() {
         return name;
@@ -25,5 +29,13 @@ public class UserInfoDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

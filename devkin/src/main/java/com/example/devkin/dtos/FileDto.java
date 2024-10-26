@@ -5,16 +5,16 @@ public class FileDto {
     private String fileName;
     private String filePath;
     private String newFileName;
-    private String projectName;
+    private String projectSlug;
 
     // Getters and Setters
 
-    public String getProjectName() {
-        return projectName;
+    public String getProjectSlug() {
+        return projectSlug;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setProjectSlug(String projectSlug) {
+        this.projectSlug = projectSlug;
     }
 
     public String getFileName() {

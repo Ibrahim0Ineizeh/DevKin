@@ -26,6 +26,9 @@ public class Project {
     @Column(nullable = false)
     private String language;
 
+    @Column(unique = true)
+    private String slug;
+
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
@@ -141,4 +144,27 @@ public class Project {
         this.description = description;
     }
 
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public Set<File> getFiles() {
+        return files;
+    }
+
+    public void setFiles(Set<File> files) {
+        this.files = files;
+    }
+
+    public Set<Folder> getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Set<Folder> folder) {
+        this.folder = folder;
+    }
 }
