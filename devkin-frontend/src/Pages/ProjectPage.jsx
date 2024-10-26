@@ -129,6 +129,16 @@ const ProjectPage = () => {
                             setOutput("Execution Failed" + executionResult.output)
                         }
                     });
+
+                    stompClient.subscribe(`/topic/change/${slug}`, (message) => {
+                        const executionResult = JSON.parse(message.body);
+                     
+                        if (executionResult.status === 'COMPLETED') {
+                            fetchProjectStructure();
+                        } else if (executionResult.status === 'ERROR') {
+                            console.log("file operation failed");
+                        }
+                    });
                 },
                 (error) => {
                     console.error('WebSocket error:', error);
