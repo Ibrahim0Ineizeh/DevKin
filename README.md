@@ -3,8 +3,8 @@
 DevKin is a collaborative code editor that enables developers to work together in real-time on shared projects. Users can create and manage projects, add collaborators, and execute code securely within a Dockerized environment. The application includes a sign-in/sign-up system, as well as light and dark mode options.
 
 <p align="center">
-  <img src="path/to/image1.png" alt="Image 1" width="45%" style="display: inline-block; margin-right: 10px;">
-  <img src="path/to/image2.png" alt="Image 2" width="45%" style="display: inline-block;">
+  <img src="media/about.png" alt="Image 1" width="45%" style="display: inline-block; margin-right: 10px;">
+  <img src="media/darkmode 2.png" alt="Image 2" width="45%" style="display: inline-block;">
 </p>
 
 ## Features
@@ -26,6 +26,11 @@ DevKin is a collaborative code editor that enables developers to work together i
 
 - **Themes**:
   - Customizable vintage theme with light and dark modes, accessible through the Navbar.
+
+<p align="center">
+  <img src="media/project page.png" alt="Image 1" width="45%" style="display: inline-block; margin-right: 10px;">
+  <img src="media/darkmode1.png" alt="Image 2" width="45%" style="display: inline-block;">
+</p>
 
 ## Tech Stack
 
